@@ -6,10 +6,11 @@ CREATE TABLE users (
     name varchar(100) not null,
     phoneNumber varchar(500) not null,
     address varchar(1000) not null,
-    birthDate varchar(300),
-    male boolean,
+    birthDate datetime,
+    gender_id int not null,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    foreign key (gender_id) references genders (id),
     primary key(id)
 )
 

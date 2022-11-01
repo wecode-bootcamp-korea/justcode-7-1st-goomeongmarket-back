@@ -1,5 +1,6 @@
-# Created by https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,node
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,visualstudiocode,node
+.env
+# Created by https://www.toptal.com/developers/gitignore/api/macos,node
+# Edit at https://www.toptal.com/developers/gitignore?templates=macos,node
 
 ### macOS ###
 # General
@@ -174,23 +175,4 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
-### VisualStudioCode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
-
-# Local History for Visual Studio Code
-.history/
-
-# Built Visual Studio Code Extensions
-*.vsix
-
-### VisualStudioCode Patch ###
-# Ignore all local history of files
-.history
-.ionide
-
-# End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,node
+# End of https://www.toptal.com/developers/gitignore/api/macos,node
