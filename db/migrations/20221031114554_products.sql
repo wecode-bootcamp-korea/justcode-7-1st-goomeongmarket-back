@@ -13,10 +13,10 @@ CREATE TABLE products (
     sale decimal not null DEFAULT 1,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    primary key(id)
+    primary key(id),
     foreign key (brand_id) references brands (id),
     foreign key (category_id) references categories (id),
-    foreign key (country_id) references countries (id),
+    foreign key (country_id) references countries (id)
 )
 
 -- migrate:down
