@@ -1,7 +1,19 @@
-.env
-# Created by https://www.toptal.com/developers/gitignore/api/ 
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,node
-package-lock.json
+# Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,visualstudiocode,node
+# Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,visualstudiocode,node
+
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
 
 ### macOS ###
 # General
@@ -177,3 +189,5 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,node
+
+package-lock.json
