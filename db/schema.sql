@@ -23,12 +23,12 @@ CREATE TABLE `brands` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `cart_list`
+-- Table structure for table `cart_item`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cart_list` (
+CREATE TABLE `cart_item` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `product_id` int NOT NULL,
@@ -37,8 +37,8 @@ CREATE TABLE `cart_list` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `product_id` (`product_id`),
-  CONSTRAINT `cart_list_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `cart_list_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
+  CONSTRAINT `cart_item_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `cart_item_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -56,12 +56,12 @@ CREATE TABLE `categories` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `comments_list`
+-- Table structure for table `comments`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `comments_list` (
+CREATE TABLE `comments` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `product_id` int NOT NULL,
@@ -70,18 +70,18 @@ CREATE TABLE `comments_list` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `product_id` (`product_id`),
-  CONSTRAINT `comments_list_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `comments_list_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
+  CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `coutries`
+-- Table structure for table `countries`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `coutries` (
+CREATE TABLE `countries` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(500) NOT NULL,
   PRIMARY KEY (`id`)
@@ -102,12 +102,12 @@ CREATE TABLE `genders` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `like_list`
+-- Table structure for table `likes`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `like_list` (
+CREATE TABLE `likes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `product_id` int NOT NULL,
@@ -115,8 +115,8 @@ CREATE TABLE `like_list` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `product_id` (`product_id`),
-  CONSTRAINT `like_list_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `like_list_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
+  CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -130,15 +130,23 @@ CREATE TABLE `products` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(2000) NOT NULL,
   `sub_name` varchar(2000) DEFAULT NULL,
-  `brand` varchar(1000) NOT NULL,
-  `category` varchar(1000) DEFAULT NULL,
-  `price` int NOT NULL,
+  `product_img` varchar(5000) NOT NULL,
+  `brand_id` int NOT NULL,
+  `category_id` int NOT NULL,
+  `price` decimal(4,2) NOT NULL,
   `inventory_number` int NOT NULL,
   `scale` varchar(500) NOT NULL,
-  `made_in` varchar(500) NOT NULL,
+  `country_id` int NOT NULL,
+  `sale` decimal(10,0) NOT NULL DEFAULT '1',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `brand_id` (`brand_id`),
+  KEY `category_id` (`category_id`),
+  KEY `country_id` (`country_id`),
+  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`brand_id`) REFERENCES `brands` (`id`),
+  CONSTRAINT `products_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`),
+  CONSTRAINT `products_ibfk_3` FOREIGN KEY (`country_id`) REFERENCES `countries` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -167,12 +175,14 @@ CREATE TABLE `users` (
   `name` varchar(100) NOT NULL,
   `phoneNumber` varchar(500) NOT NULL,
   `address` varchar(1000) NOT NULL,
-  `birthDate` varchar(300) DEFAULT NULL,
-  `male` tinyint(1) DEFAULT NULL,
+  `birthDate` datetime DEFAULT NULL,
+  `gender_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  KEY `gender_id` (`gender_id`),
+  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`gender_id`) REFERENCES `genders` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -197,13 +207,13 @@ CREATE TABLE `users` (
 
 LOCK TABLES `schema_migrations` WRITE;
 INSERT INTO `schema_migrations` (version) VALUES
+  ('20221031114530'),
+  ('20221031114541'),
+  ('20221031114542'),
+  ('20221031114544'),
   ('20221031114545'),
   ('20221031114554'),
   ('20221031114620'),
   ('20221031114628'),
-  ('20221031114635'),
-  ('20221101022152'),
-  ('20221101022254'),
-  ('20221101022322'),
-  ('20221101022356');
+  ('20221031114635');
 UNLOCK TABLES;
