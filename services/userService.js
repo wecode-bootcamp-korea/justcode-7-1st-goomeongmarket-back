@@ -19,4 +19,6 @@ const signup = async (
   if (user.length !== 0) {
     throw new Error("USER_ALREADY_EXISTS");
   }
+
+  const hashedPw = bcrypt.hashsync(password, bcrypt.genSaltSync());
 };
