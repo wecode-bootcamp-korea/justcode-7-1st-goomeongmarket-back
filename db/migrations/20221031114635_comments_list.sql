@@ -1,6 +1,6 @@
 -- migrate:up
 
-  CREATE TABLE comments_list (
+  CREATE TABLE comments (
     id int not null auto_increment,
     user_id int not null,
     product_id int not null,
