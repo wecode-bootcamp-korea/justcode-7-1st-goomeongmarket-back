@@ -13,5 +13,6 @@ router.get("/new", controller.LineUpToNew);
 module.exports = router;
 
 /*
-4. 필터 ------> 나중에 생각한다?
+
+
 */
