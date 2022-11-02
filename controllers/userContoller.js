@@ -11,7 +11,6 @@ const signup = async (req, res) => {
     phoneNumber,
     address,
     birthDate,
-    gender_id,
   };
 
   Object.keys(REQUIRED_KEYS).map((key) => {
