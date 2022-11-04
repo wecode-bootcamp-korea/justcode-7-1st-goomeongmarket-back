@@ -6,8 +6,8 @@
 const productModel = require("../models/productDao");
 //-------------------------------------------------------------------------------
 
-const getProducts = async (token) => {
-  const result = await productModel.getProducts(token);
+const getProducts = async () => {
+  const result = await productModel.getProducts;
   return result;
 };
 
@@ -33,13 +33,25 @@ const productData = async (product_id) => {
   }
 };
 
-const LineUpToNew = async (token) => {
-  const result = await productModel.LineUpToNew(token);
+const LineUpToNew = async () => {
+  const result = await productModel.LineUpToNew;
   return result;
+};
+
+const getReviewByProduct = async (product_id) => {
+  const result = await productModel.getReviewByProduct(product_id);
+  if (!result.length) {
+    const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
+    error.status = 400;
+    throw error;
+  } else {
+    return result;
+  }
 };
 module.exports = {
   getProducts,
   getProductsByCategory,
   productData,
   LineUpToNew,
+  getReviewByProduct,
 };
