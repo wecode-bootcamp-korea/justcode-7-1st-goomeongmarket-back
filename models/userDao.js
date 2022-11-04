@@ -5,11 +5,7 @@ const doubleCheckEmail = async (email) => {
   const user = await myDataSource.query(`
     SELECT id, email FROM users WHERE email = '${email}'
     `);
-
-  return user;
 };
-
-//api 작성해야... 후.... 하나씩 구축할때마다 error나올 때 목데이터도 넣어서 예시를 보여줘야
 
 console.log("dao 1");
 
@@ -19,7 +15,7 @@ const signup = async (
   name,
   phoneNumber,
   address,
-  birthDate, //datetime -> date로 데이터 가공
+  birthDate, //datetime -> date로 데이터 가공 어떻게..?
   gender_id
 ) => {
   await myDatasource.query(`
@@ -29,7 +25,40 @@ INSERT INTO users (email, password, name, phoneNumber, address, birthDate, gende
 };
 
 console.log("dao 2");
+
+//login
+
+const login = async (email, password) => {
+  // user 존재 체크
+  const [existingUser] = await myDataSource.query(`
+SELECT email, password FROM users WHERE email = '${email}`);
+
+  console.log("USER: ", existingUser);
+
+  console.log("dao login 1");
+};
+
+//update
+
+const update = async (
+  email,
+  hashedPw,
+  name,
+  phoneNumber,
+  address,
+  birthDate, //datetime -> date로 데이터 가공 어떻게..?
+  gender_id
+) => {
+  await myDatasource.query(`
+UPDATE users SET (email, password, name, phoneNumber, address, birthDate, gender_id) VALUES (
+  '${email}', '${hashedPw}', '${name}', '${phoneNumber}', '${address}', '${birthDate}', '${gender_id}') 
+  WHERE (id)= = '${id}'`);
+};
+
+//delete
 module.exports = {
   doubleCheckEmail,
   signup,
+  login,
+  update,
 };
