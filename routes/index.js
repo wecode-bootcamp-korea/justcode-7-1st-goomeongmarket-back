@@ -7,9 +7,9 @@ const likeRouter = require("./likeRouter");
 
 const router = express.Router();
 
-router.use("/user", userRouter);
+// router.use("/user", userRouter);
 // router.use(productRouter);
-router.use("/cart", cartRouter);
+// router.use("/cart", cartRouter);
 router.use("/like", likeRouter);
 
 module.exports = router;
