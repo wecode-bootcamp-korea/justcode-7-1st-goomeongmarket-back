@@ -5,7 +5,7 @@ const cartRouter = require("./cartRouter");
 
 const router = express.Router();
 
-router.use("/user", userRouter);
+router.use("/users", userRouter);
 router.use("/cart", cartRouter);
 
 module.exports = router;

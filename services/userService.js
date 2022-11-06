@@ -1,50 +1,79 @@
-const userDao = require("../models/userDao");
+const userDao = require("../models/userDao"); //dao exports 불러오는걸 받아주는 역할
 const { email_validation, password_validation } = require("../validationRule");
 const signup = async (
+  //service에서 이거 쓸거야 . usercontroller await userService에서 인자를 동일한 순서로 보내줘야함.
   email,
   password,
   name,
   phoneNumber,
   address,
-  birthdate,
+  birthDate,
   gender_id
 ) => {
+  console.log("service 1");
+
   // 0. email, password 형식 에러 처리
 
   // if (!email.includes('@') || !email.includes('.')) {
   //   throw new Error ('EMAIL_INVALID')
-  // }
+  // }  validation 안쓰고 직접 지정할 때
 
-  if (email_validation.test(email)) {
+  if (!email.match(email_validation)) {
     throw new Error("EMAIL_INVALID");
   }
 
-  if (password_validation.test(password)) {
+  if (!password.match(password_validation)) {
     throw new Error("PASSWORD_INVALID");
   }
-  // 1. email 중복확인
 
-  console.log("service 1");
-
-  const user = userDao.doubleCheckEmail(email);
-
-  if (user.length !== 0) {
-    throw new Error("EMAIL_ALREADY_EXISTS");
+  if (!phoneNumber.match(phoneNumber_validation)) {
+    throw new Error("PHONENUMBER_INVALID");
   }
 
-  // 2. 비밀번호 확인 (입력한 비밀번호와 동일한지)
+  if (!birthDate.match(birthDate_validation)) {
+    throw new Error("PHONENUMBER_INVALID");
+  }
 
-  // 3. 휴대폰 번호 형식 에러처리
+  // 1. email 중복확인
+
+  const user = await userDao.doubleCheckEmail(email); //파일 자체 사용시 require, 그 파일 내 함수 불러올거면 .으로
+
+  if (user.length !== 0) {
+    const error = new Error("EMAIL_ALREADY_EXISTS");
+    error.statusCode = 400;
+    throw error;
+  }
+  console.log("service 2");
 
   // 4. 주소 형식 에러처리
 
-  // 5. 생년월일 형식 에러처리
-
   // 6. 필수를 모두 기입 또는 체크했는가
 
+  //hashedPw 생성
   const hashedPw = bcrypt.hashsync(password, bcrypt.genSaltSync());
+
+  const createUser = await userDao.createUser(
+    //다오에서 필요하니 보내주는 것
+    email,
+    hashedPw,
+    name,
+    phoneNumber,
+    address,
+    birthDate,
+    gender_id
+  );
+  console.log("service 3");
+  return createUser;
 };
 
+//비밀번호 확인 칸
+const pwcheck = async (password, password2) => {
+  if (password2 !== password) {
+    const error = new Error("NOT_A_SAME_PASSWORD");
+    error.statusCode = 400;
+    throw error;
+  }
+};
 //login
 const login = async (email, password) => {
   // 1. 이메일, 비번 형식
@@ -83,5 +112,8 @@ const login = async (email, password) => {
 
 module.exports = {
   signup,
+  pwcheck,
   login,
-};
+  //update,
+  //delete,
+}; //controller에서 쓰기 위함.

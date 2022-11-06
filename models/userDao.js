@@ -1,30 +1,37 @@
 // 1. signup
 // 1-1. email 중복확인
+const bcrypt = require("bcryptjs");
 const myDataSource = require("../models/index");
+
+//----------
+
+//이메일 중복확인
 const doubleCheckEmail = async (email) => {
+  //async(외부에서 받아와야 하는 것)
+  console.log("dao 1");
   const user = await myDataSource.query(`
     SELECT id, email FROM users WHERE email = '${email}'
     `);
+  return user;
 };
 
-console.log("dao 1");
-
-const signup = async (
+const createUser = async (
+  //dao는 보통 함수명을 crud로 보편적으로 함.
   email,
   hashedPw,
   name,
   phoneNumber,
   address,
-  birthDate, //datetime -> date로 데이터 가공 어떻게..?
+  birthDate,
   gender_id
 ) => {
+  console.log("dao 2");
+
   await myDatasource.query(`
 INSERT INTO users (email, password, name, phoneNumber, address, birthDate, gender_id) VALUES (
   '${email}', '${hashedPw}', '${name}', '${phoneNumber}', '${address}', '${birthDate}', '${gender_id}'}
 )`);
 };
-
-console.log("dao 2");
 
 //login
 
@@ -38,7 +45,9 @@ SELECT email, password FROM users WHERE email = '${email}`);
   console.log("dao login 1");
 };
 
-//update
+update;
+
+const hashedPw = bcrypt.hashsync(password, bcrypt.genSaltSync());
 
 const update = async (
   email,
@@ -51,14 +60,14 @@ const update = async (
 ) => {
   await myDatasource.query(`
 UPDATE users SET (email, password, name, phoneNumber, address, birthDate, gender_id) VALUES (
-  '${email}', '${hashedPw}', '${name}', '${phoneNumber}', '${address}', '${birthDate}', '${gender_id}') 
+  '${email}', '${hashedPw}', '${name}', '${phoneNumber}', '${address}', '${birthDate}', '${gender_id}')
   WHERE (id)= = '${id}'`);
 };
 
-//delete
+// //delete
 module.exports = {
   doubleCheckEmail,
-  signup,
+  createUser,
   login,
-  update,
-};
+  //update,
+}; //service에서 쓰기위함.
