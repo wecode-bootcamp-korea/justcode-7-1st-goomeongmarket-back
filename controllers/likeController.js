@@ -3,6 +3,7 @@ const likeService = require("../services/likeService");
 const addLike = async (req, res) => {
   try {
     const { product_id } = req.body;
+    const { token } = req.headers;
 
     const REQUIRED_KEYS = {
       product_id,
@@ -16,7 +17,7 @@ const addLike = async (req, res) => {
       }
     });
 
-    await likeService.addLike(product_id);
+    await likeService.addLike(product_id, token);
     res.status(201).json({ message: "success product like" });
   } catch (err) {
     console.log(err);
@@ -26,7 +27,9 @@ const addLike = async (req, res) => {
 
 const likeInfo = async (req, res) => {
   try {
-    let result = await likeService.likeInfo();
+    const { token } = req.headers;
+
+    let result = await likeService.likeInfo(token);
     res.status(200).json({ message: "success check likelist", data: result });
   } catch (err) {
     console.log(err);
@@ -37,6 +40,7 @@ const likeInfo = async (req, res) => {
 const removelike = async (req, res) => {
   try {
     const { product_id } = req.body;
+    const { token } = req.headers;
 
     const REQUIRED_KEYS = {
       product_id,
@@ -50,7 +54,7 @@ const removelike = async (req, res) => {
       }
     });
 
-    await likeService.removelike(product_id);
+    await likeService.removelike(product_id, token);
 
     res.status(200).json({ message: "success delete product" });
   } catch (err) {

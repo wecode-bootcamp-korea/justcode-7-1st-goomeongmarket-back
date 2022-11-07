@@ -4,6 +4,7 @@ const cartService = require("../services/cartService");
 const cartUpdate = async (req, res) => {
   try {
     const { product_name } = req.body;
+    const { token } = req.headers;
     const REQUIRED_KEYS = {
       product_name,
     };
@@ -15,7 +16,7 @@ const cartUpdate = async (req, res) => {
         throw error;
       }
     });
-    await cartService.cartUpdate(product_name);
+    await cartService.cartUpdate(product_name, token);
 
     res
       .status(200)
@@ -29,7 +30,8 @@ const cartUpdate = async (req, res) => {
 //페이지상의 장바구니 버튼을 눌렀을 때 해당 유저가 담은 제품 목록을 알려주는 api
 const cartList = async (req, res) => {
   try {
-    const result = await cartService.cartList();
+    const { token } = req.headers;
+    const result = await cartService.cartList(token);
     res.status(200).json({ message: "success", data: result });
   } catch (err) {
     console.log(err);
