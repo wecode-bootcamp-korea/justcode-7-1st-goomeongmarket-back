@@ -1,17 +1,5 @@
-const { DataSource } = require("typeorm");
-//const { validateToken } = require("./middleware/validateToken.js");
+const { myDataSource } = require("./index.js");
 
-const myDataSource = new DataSource({
-  type: process.env.TYPEORM_CONNECTION,
-  host: process.env.TYPEORM_HOST,
-  port: process.env.TYPEORM_PORT,
-  username: process.env.TYPEORM_USERNAME,
-  password: process.env.TYPEORM_PASSWORD,
-  database: process.env.TYPEORM_DATABASE,
-});
-myDataSource.initialize().then(() => {
-  console.log("Data Source has been initialized!");
-});
 //----------------------------------------------------------------
 
 const getProducts = async () => {
@@ -21,13 +9,30 @@ const getProducts = async () => {
   return result;
 };
 
-const getProductsByCategory = async (category_id) => {
-  const result = await myDataSource.query(
-    `SELECT products.* , product_images.image_url FROM products INNER JOIN categories ON products.category_id=categories.id INNER JOIN product_images ON product_images.product_id=products.id WHERE categories.name = "${category_id}"`
-  );
-  return result;
+const getProductsByCategory = async (category_id, sorted_type, filters) => {
+  if (sorted_type > 0) {
+    const result = await myDataSource.query(
+      `select products.*, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id WHERE categories.name = "${category_id}" order by ${sorted_type}`
+    );
+    return result;
+  }
+  if (sorted_type < 0) {
+    const result = await myDataSource.query(
+      `select products.*, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id WHERE categories.name = "${category_id}" order by ${
+        sorted_type * -1
+      } desc`
+    );
+    return result;
+  }
+  if (!sorted_type) {
+    const result = await myDataSource.query(
+      `select products.*, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id WHERE categories.name = "${category_id}" order by ${
+        sorted_type * -1
+      } desc`
+    );
+    return result;
+  }
 };
-
 const productData = async (product_id) => {
   const result = await myDataSource.query(
     `select * from products where products.id = ${product_id}`
@@ -48,6 +53,7 @@ const getReviewByProduct = async (product_id) => {
   );
   return result;
 };
+
 module.exports = {
   getProducts,
   getProductsByCategory,

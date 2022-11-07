@@ -1,17 +1,3 @@
-const http = require("http");
-const express = require("express");
-const dotenv = require("dotenv");
-dotenv.config();
-const { DataSource } = require("typeorm");
-
-const myDataSource = new DataSource({
-  type: process.env.TYPEORM_CONNECTION,
-  host: process.env.TYPEORM_HOST,
-  port: process.env.TYPEORM_PORT,
-  username: process.env.TYPEORM_USERNAME,
-  password: process.env.TYPEORM_PASSWORD,
-  database: process.env.TYPEORM_DATABASE,
-});
 const productservice = require("../services/productService");
 
 //------------------------------------------------------------------------------------
@@ -29,15 +15,21 @@ const getProducts = async (req, res) => {
 //카테고리 별로 보내기---------------------------------------------------------------------
 const getProductsByCategory = async (req, res) => {
   const category_id = req.params.categoryId;
+  const sorted_type = req.query.sorted_type;
+  const filters = req.query.filters;
   try {
-    const result = await productservice.getProductsByCategory(category_id);
+    const result = await productservice.getProductsByCategory(
+      category_id,
+      sorted_type,
+      filters
+    );
     res.status(200).json({ result });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
   }
 };
-//제품 하나 보내기-----------------------------------------------------------------------
+//제품별로 보내기-----------------------------------------------------------------------
 const product = async (req, res) => {
   const product_id = req.params.productId;
   try {

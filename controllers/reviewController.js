@@ -9,8 +9,10 @@ const myReviewList = async (req, res) => {
       throw error;
     }
     const result = await reviewService.myReviewList(token);
-    res.status(200).json({ message: success, data: result });
+
+    res.status(200).json({ data: result });
   } catch (err) {
+    console.log(err);
     res.status(err.statusCode).json({ message: err.message });
   }
 };
