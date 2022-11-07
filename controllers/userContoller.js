@@ -4,11 +4,28 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { check } = require("prettier");
 
+const doubleCheckEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const REQUIRED_KEYS = { email };
+
+    Object.keys(REQUIRED_KEYS).map((key) => {
+      if (!REQUIRED_KEYS[key]) {
+        const error = new Error(`KEY_ERROR: ${key}`);
+        error.statusCode = 400;
+        throw error;
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+
+  res.status(err.statusCode).json({ message: err.message });
+};
+
 // controller.signup 함수 정의
 const signup = async (req, res) => {
   try {
-    console.log("controller 1");
-
     const {
       email,
       password,
@@ -17,6 +34,7 @@ const signup = async (req, res) => {
       address,
       birthDate,
       gender_id,
+      hashedPw,
     } = req.body;
 
     // 1. 키에러
@@ -39,8 +57,6 @@ const signup = async (req, res) => {
       }
     });
 
-    console.log("controller 2");
-
     await userService.signup(
       //service에서 controller로 연결
       email,
@@ -49,10 +65,9 @@ const signup = async (req, res) => {
       phoneNumber,
       address,
       birthDate,
-      gender_id
+      gender_id,
+      hashedPw
     );
-
-    console.log("controller 3");
 
     res.status(201).json({ message: "USER_CREATED" });
   } catch (err) {
@@ -66,39 +81,36 @@ const signup = async (req, res) => {
   }
 };
 
-//비밀번호 확인 칸
-const pwcheck = async (req, res) => {
-  try {
-    const { password, password2 } = req.body;
-    const REQUIRED_KEYS = {
-      password,
-      password2,
-    };
+// //비밀번호 확인 칸
+// const pwcheck = async (req, res) => {
+//   try {
+//     const { password, password2 } = req.body;
+//     const REQUIRED_KEYS = {
+//       password,
+//       password2,
+//     };
 
-    Object.keys(REQUIRED_KEYS).map((key) => {
-      if (!REQUIRED_KEYS[key]) {
-        const error = new Error(`KEY_ERROR: ${key}`);
-        error.statusCode = 400;
-        throw error;
-      }
-    });
-    await userService.pwcheck(password, password2);
+//     Object.keys(REQUIRED_KEYS).map((key) => {
+//       if (!REQUIRED_KEYS[key]) {
+//         const error = new Error(`KEY_ERROR: ${key}`);
+//         error.statusCode = 400;
+//         throw error;
+//       }
+//     });
+//     await userService.pwcheck(password, password2);
 
-    res.status(201).json({ message: "SAME_PASSWORD" });
-  } catch (err) {
-    console.log(err);
-    res.status(err.statusCode).json({ message: err.message });
-  }
-};
+//     res.status(201).json({ message: "SAME_PASSWORD" });
+//   } catch (err) {
+//     console.log(err);
+//     res.status(err.statusCode).json({ message: err.message });
+//   }
+// };
 
 //login
 
 const login = async (req, res) => {
   try {
-    console.log("controller login 1");
     const { email, password } = req.body;
-
-    //1. key error check
 
     const REQUIRED_KEYS = { email, password };
 
@@ -110,13 +122,12 @@ const login = async (req, res) => {
       }
     });
 
-    console.log("controller login 2");
+    await userService.login(email, password);
 
     //비밀번호 동일한지 확인
     const isSame = bcrypt.compareSync(password, existingUser.password);
-
+    await userService.login(isSame);
     console.log("isSamePassword: ", isSame);
-    console.log("controller login 3");
 
     // success
     const token = jwt.sign({ id: existingUser.id }, process.env.SECRET_KEY);
@@ -147,8 +158,9 @@ const login = async (req, res) => {
 
 module.exports = {
   signup,
-  pwcheck,
+  //pwcheck,
   login,
+  doubleCheckEmail,
   // update,
   // delete
 }; // userController.login -->router에서 쓰기 위함
