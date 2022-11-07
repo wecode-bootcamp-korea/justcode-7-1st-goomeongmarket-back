@@ -1,6 +1,6 @@
 -- migrate:up
 
-  CREATE TABLE cart_list (
+  CREATE TABLE cart_item (
     id int not null auto_increment,
     user_id int not null,
     product_id int not null,

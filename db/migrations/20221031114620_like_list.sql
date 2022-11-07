@@ -1,5 +1,5 @@
 -- migrate:up
-CREATE TABLE like_list (
+CREATE TABLE likes (
     id int not null auto_increment,
     user_id int not null,
     product_id int not null,
