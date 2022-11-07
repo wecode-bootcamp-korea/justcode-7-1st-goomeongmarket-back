@@ -37,7 +37,7 @@ const likeInfo = async (req, res) => {
   }
 };
 
-const removelike = async (req, res) => {
+const removeLike = async (req, res) => {
   try {
     const { product_id } = req.body;
     const { token } = req.headers;
@@ -54,7 +54,7 @@ const removelike = async (req, res) => {
       }
     });
 
-    await likeService.removelike(product_id, token);
+    await likeService.removeLike(product_id, token);
 
     res.status(200).json({ message: "success delete product" });
   } catch (err) {
@@ -63,4 +63,4 @@ const removelike = async (req, res) => {
   }
 };
 
-module.exports = { addLike, likeInfo, removelike };
+module.exports = { addLike, likeInfo, removeLike };
