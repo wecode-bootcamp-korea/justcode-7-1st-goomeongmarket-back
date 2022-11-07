@@ -21,11 +21,11 @@ const likeInfo = async (token) => {
   return await likeDao.likeInfo(user_id);
 };
 
-const removelike = async (product_id, token) => {
+const removeLike = async (product_id, token) => {
   const user = jwt.verify(token, jwtSecret);
   const user_id = user.id;
 
-  await likeDao.removelike(user_id, product_id);
+  await likeDao.removeLike(user_id, product_id);
 };
 
-module.exports = { addLike, likeInfo, removelike };
+module.exports = { addLike, likeInfo, removeLike };

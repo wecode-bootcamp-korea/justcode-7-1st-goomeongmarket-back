@@ -31,11 +31,11 @@ const likeInfo = async (user_id) => {
   return listInfo;
 };
 
-const removelike = async (user_id, product_id) => {
+const removeLike = async (user_id, product_id) => {
   await myDataSource.query(`
   DELETE FROM likes
   WHERE user_id = ${user_id} && product_id = ${product_id}
   `);
 };
 
-module.exports = { addLike, likeInfo, removelike };
+module.exports = { addLike, likeInfo, removeLike };
