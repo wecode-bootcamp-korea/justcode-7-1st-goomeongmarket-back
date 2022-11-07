@@ -3,7 +3,6 @@ CREATE TABLE products (
     id int not null auto_increment,
     name varchar(2000) not null,
     sub_name varchar(2000),
-    product_img varchar(5000) not null,
     brand_id int not null,
     category_id int not null,
     price decimal(4,2) not null,
