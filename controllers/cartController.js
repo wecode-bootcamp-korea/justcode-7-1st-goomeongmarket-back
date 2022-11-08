@@ -17,7 +17,7 @@ const cartUpdate = async (req, res) => {
         throw error;
       }
     });
-    await cartService.cartUpdate(product_id, put_quantity);
+    await cartService.cartUpdate(product_id, put_quantity, token);
 
     res
       .status(200)
@@ -32,7 +32,7 @@ const cartUpdate = async (req, res) => {
 const cartList = async (req, res) => {
   try {
     const { token } = req.headers;
-    const result = await cartService.cartList();
+    const result = await cartService.cartList(token);
     res.status(200).json({ message: "success", data: result });
   } catch (err) {
     console.log(err);
