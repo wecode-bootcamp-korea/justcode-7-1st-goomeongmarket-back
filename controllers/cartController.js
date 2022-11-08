@@ -3,10 +3,11 @@ const cartService = require("../services/cartService");
 //메인페이지에서 상품사진에 있는 장바구니 모양 눌렀을때 실행될 api
 const cartUpdate = async (req, res) => {
   try {
-    const { product_name } = req.body;
+    const { product_id, put_quantity } = req.body;
     const { token } = req.headers;
     const REQUIRED_KEYS = {
-      product_name,
+      product_id,
+      put_quantity,
     };
 
     Object.keys(REQUIRED_KEYS).map((key) => {
@@ -16,7 +17,7 @@ const cartUpdate = async (req, res) => {
         throw error;
       }
     });
-    await cartService.cartUpdate(product_name, token);
+    await cartService.cartUpdate(product_id, put_quantity);
 
     res
       .status(200)
@@ -31,7 +32,7 @@ const cartUpdate = async (req, res) => {
 const cartList = async (req, res) => {
   try {
     const { token } = req.headers;
-    const result = await cartService.cartList(token);
+    const result = await cartService.cartList();
     res.status(200).json({ message: "success", data: result });
   } catch (err) {
     console.log(err);

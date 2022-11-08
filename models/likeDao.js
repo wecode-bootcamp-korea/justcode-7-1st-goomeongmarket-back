@@ -24,9 +24,9 @@ const likeInfo = async (user_id) => {
     GROUP BY likes.user_id
   `);
 
-  listInfo = [...listInfo].map((item) => {
-    return { ...item, products: JSON.parse(item.products) };
-  });
+  // listInfo = [...listInfo].map((item) => {
+  //   return { ...item, products: JSON.parse(item.products) };
+  // });
 
   return listInfo;
 };
