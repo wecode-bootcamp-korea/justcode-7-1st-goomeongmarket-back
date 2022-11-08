@@ -1,25 +1,23 @@
 const userDao = require("../models/userDao");
-// const {
-//   password_validation,
-//   phoneNumber_validation,
-//   birthDate_validation,
-// } = require("../validationRule");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const jwtSecret = process.env.JWT_SECRET;
 
 const doubleCheckEmail = async (email) => {
-  await userDao.doubleCheckEmail(email);
-  if (user.length !== 0) {
+  const doublecheck = await userDao.doubleCheckEmail(email);
+  console.log(doublecheck);
+  if (doublecheck.length !== 0) {
     const error = new Error("EMAIL_ALREADY_EXISTS");
     error.statusCode = 400;
     throw error;
   }
+  return doublecheck;
 };
+
 const signup = async (
   email,
   password,
-  name,
+  username,
   phoneNumber,
   address,
   birthDate,
@@ -36,7 +34,7 @@ const signup = async (
   const createUser = await userDao.createUser(
     email,
     hashedPw,
-    name,
+    username,
     phoneNumber,
     address,
     birthDate,

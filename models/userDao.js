@@ -13,7 +13,7 @@ const doubleCheckEmail = async (email) => {
 const createUser = async (
   email,
   hashedPw,
-  name,
+  username,
   phoneNumber,
   address,
   birthDate,
@@ -21,7 +21,7 @@ const createUser = async (
 ) => {
   await myDataSource.query(`
 INSERT INTO users (email, password, username, phoneNumber, address, birthDate, gender_id) VALUES (
-  '${email}', '${hashedPw}', '${name}', '${phoneNumber}', '${address}', ${birthDate}, ${gender_id}
+  '${email}', '${hashedPw}', '${username}', '${phoneNumber}', '${address}', ${birthDate}, ${gender_id}
 )`);
 };
 
