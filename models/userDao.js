@@ -20,7 +20,7 @@ const createUser = async (
   gender_id
 ) => {
   await myDataSource.query(`
-INSERT INTO users (email, password, name, phoneNumber, address, birthDate, gender_id) VALUES (
+INSERT INTO users (email, password, username, phoneNumber, address, birthDate, gender_id) VALUES (
   '${email}', '${hashedPw}', '${name}', '${phoneNumber}', '${address}', ${birthDate}, ${gender_id}
 )`);
 };
@@ -30,7 +30,7 @@ INSERT INTO users (email, password, name, phoneNumber, address, birthDate, gende
 const login = async (email) => {
   // user 존재 체크
   const [existingUser] = await myDataSource.query(`
-SELECT email, password FROM users WHERE email = '${email}'`);
+SELECT id, password FROM users WHERE email = '${email}'`);
   return existingUser;
 };
 
