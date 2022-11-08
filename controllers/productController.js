@@ -12,16 +12,15 @@ const getProducts = async (req, res) => {
     res.status(err.status).json({ message: err.message });
   }
 };
+
 //카테고리 별로 보내기---------------------------------------------------------------------
 const getProductsByCategory = async (req, res) => {
   const category_id = req.params.categoryId;
   const sorted_type = req.query.sorted_type;
-  const filters = req.query.filters;
   try {
     const result = await productservice.getProductsByCategory(
       category_id,
-      sorted_type,
-      filters
+      sorted_type
     );
     res.status(200).json({ result });
   } catch (err) {
@@ -40,10 +39,29 @@ const product = async (req, res) => {
     res.status(err.status).json({ message: err.message });
   }
 };
-//신상품 순으로 보내기----------------------------------------------------------------------
-const LineUpToNew = async (req, res) => {
+//결재----------------------------------------------------------------------
+const oderProduct = async (req, res) => {
   try {
-    const result = await productservice.LineUpToNew;
+    const { product_id, ordered_number } = req.body;
+    const { token } = req.headers;
+
+    const required_keys = { product_id, ordered_number };
+
+    Object.keys(required_keys).map((key) => {
+      if (!required_keys[key]) {
+        throw new Error(`KEY_ERROR: ${key}`);
+      }
+    });
+
+    if (!token) {
+      throw new Error("ERROR: LOGIN_REQUESTED");
+    }
+
+    const result = await productservice.oderProduct(
+      token,
+      product_id,
+      ordered_number
+    );
     res.status(200).json({ products: result });
   } catch (err) {
     console.log(err);
@@ -61,10 +79,33 @@ const getReviewByProduct = async (req, res) => {
     res.status(err.status).json({ message: err.message });
   }
 };
+
+// 신상품 순으로 제품 보내기-------------------------------------------------------------------
+const getNewProduct = async (req, res) => {
+  const category_id = req.query.category_id;
+  const sorted_type = req.query.sorted_type;
+  try {
+    const result = await productservice.getNewProduct(category_id, sorted_type);
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(err.status).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getProducts,
   getProductsByCategory,
   product,
-  LineUpToNew,
+  oderProduct,
   getReviewByProduct,
+  getNewProduct,
 };
+/*
+sorted_type = 2 -> 제품이름 순
+sorted_type = 6 -> 가격 순
+sorted_type = 2 -> 제품이름 순
+sorted_type = 6 -> 가격 순
+sorted_type = 10 -> 세일 순
+sorted_type = 11 -> 신상 순
+sorted_type = 15 -> 제품 많은 순*/
