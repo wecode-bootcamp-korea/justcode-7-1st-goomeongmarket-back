@@ -175,7 +175,7 @@ CREATE TABLE `users` (
   `name` varchar(100) NOT NULL,
   `phoneNumber` varchar(500) NOT NULL,
   `address` varchar(1000) NOT NULL,
-  `birthDate` datetime DEFAULT NULL,
+  `birthDate` date NOT NULL,
   `gender_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
