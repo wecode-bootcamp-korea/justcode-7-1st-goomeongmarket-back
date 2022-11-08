@@ -1,56 +1,40 @@
 const userDao = require("../models/userDao");
-// const {
-//   password_validation,
-//   phoneNumber_validation,
-//   birthDate_validation,
-// } = require("../validationRule");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const jwtSecret = process.env.JWT_SECRET;
 
 const doubleCheckEmail = async (email) => {
-  await userDao.doubleCheckEmail(email);
-  if (user.length !== 0) {
+  const doublecheck = await userDao.doubleCheckEmail(email);
+  console.log(doublecheck);
+  if (doublecheck.length !== 0) {
     const error = new Error("EMAIL_ALREADY_EXISTS");
     error.statusCode = 400;
     throw error;
   }
+  return doublecheck;
 };
+
 const signup = async (
   email,
   password,
-  name,
+  username,
   phoneNumber,
   address,
   birthDate,
   gender_id
 ) => {
   if (!email.includes("@") || !email.includes(".")) {
-    throw new Error("EMAIL_INVALID");
+    const error = new Error("EMAIL_INVALID");
+    error.statusCode = 400;
+    throw error;
   }
-
-  // if (!email.match(email_validation)) {
-  //   throw new Error("EMAIL_INVALID");
-  // }
-  // console.log(password_validation.test(password));
-
-  // if (!password.match(password_validation)) {
-  //   throw new Error("PASSWORD_INVALID");
-  // }
-
-  // if (!phoneNumber.match(phoneNumber_validation)) {
-  //   throw new Error("PHONENUMBER_INVALID");
-  // }
-
-  // if (!birthDate.match(birthDate_validation)) {
-  //   throw new Error("BIRTHDATE_INVALID");
-  // }
 
   const hashedPw = bcrypt.hashSync(password, bcrypt.genSaltSync());
 
   const createUser = await userDao.createUser(
     email,
     hashedPw,
-    name,
+    username,
     phoneNumber,
     address,
     birthDate,
@@ -63,7 +47,9 @@ const signup = async (
 //login
 const login = async (email, password) => {
   if (!email.includes("@") || !email.includes(".")) {
-    throw new Error("EMAIL_INVALID");
+    const error = new Error("EMAIL_INVALID");
+    error.statusCode = 400;
+    throw error;
   }
   //password validation
 
