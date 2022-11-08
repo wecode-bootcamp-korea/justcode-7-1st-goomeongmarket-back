@@ -4,9 +4,10 @@ const productservice = require("../services/productService");
 
 //메인에 전부 보내기
 const getProducts = async (req, res) => {
+  // const
   try {
-    const result = await productservice.getProducts;
-    res.status(200).json({ products: result });
+    const result = await productservice.getProducts();
+    res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
@@ -16,13 +17,13 @@ const getProducts = async (req, res) => {
 //카테고리 별로 보내기---------------------------------------------------------------------
 const getProductsByCategory = async (req, res) => {
   const category_id = req.params.categoryId;
-  const sorted_type = req.query.sorted_type;
+  const sorted_by = req.query.sorted_by;
   try {
     const result = await productservice.getProductsByCategory(
       category_id,
-      sorted_type
+      sorted_by
     );
-    res.status(200).json({ result });
+    res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
@@ -33,7 +34,7 @@ const product = async (req, res) => {
   const product_id = req.params.productId;
   try {
     const result = await productservice.productData(product_id);
-    res.status(200).json({ result });
+    res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
@@ -62,7 +63,7 @@ const oderProduct = async (req, res) => {
       product_id,
       ordered_number
     );
-    res.status(200).json({ products: result });
+    res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
@@ -73,7 +74,7 @@ const getReviewByProduct = async (req, res) => {
   const product_id = req.params.productId;
   try {
     const result = await productservice.getReviewByProduct(product_id);
-    res.status(200).json({ result });
+    res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
@@ -83,10 +84,10 @@ const getReviewByProduct = async (req, res) => {
 // 신상품 순으로 제품 보내기-------------------------------------------------------------------
 const getNewProduct = async (req, res) => {
   const category_id = req.query.category_id;
-  const sorted_type = req.query.sorted_type;
+  const sorted_by = req.query.sorted_by;
   try {
-    const result = await productservice.getNewProduct(category_id, sorted_type);
-    res.status(200).json({ result });
+    const result = await productservice.getNewProduct(category_id, sorted_by);
+    res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
