@@ -12,21 +12,24 @@ const likeInfo = async (user_id) => {
     SELECT likes.user_id,
     JSON_ARRAYAGG(
             JSON_OBJECT(
-              "product_id", products.id,
-              "product_name", products.name,
-              "product_price",products.price,
-              "product_img", products.product_img
+              "id", products.id,
+              "title", products.name,
+              "price",products.price,
+              "img", product_images.image_url,
+              "put_quantity", cart_item.put_quantity
             )
           )as products
     FROM likes
     JOIN products ON likes.product_id = products.id
+    JOIN product_images ON likes.product_id = product_images.product_id
+    JOIN cart_item ON likes.product_id = cart_item.product_id
     WHERE likes.user_id = ${user_id}
     GROUP BY likes.user_id
   `);
 
-  listInfo = [...listInfo].map((item) => {
-    return { ...item, products: JSON.parse(item.products) };
-  });
+  // listInfo = [...listInfo].map((item) => {
+  //   return { ...item, products: JSON.parse(item.products) };
+  // });
 
   return listInfo;
 };

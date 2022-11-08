@@ -3,7 +3,7 @@ CREATE TABLE users (
     id int not null auto_increment,
     email varchar(200) unique not null,
     password varchar(300) not null,
-    name varchar(100) not null,
+    username varchar(100) not null,
     phoneNumber varchar(500) not null,
     address varchar(1000) not null,
     birthDate date not null,
