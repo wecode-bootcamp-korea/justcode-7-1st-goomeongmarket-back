@@ -1,9 +1,9 @@
-// signup
 const userService = require("../services/userService");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+
 const { check } = require("prettier");
 
+//이메일 중복확인
 const doubleCheckEmail = async (req, res) => {
   try {
     const { email } = req.body;
@@ -16,11 +16,14 @@ const doubleCheckEmail = async (req, res) => {
         throw error;
       }
     });
+
+    const result = await userService.doubleCheckEmail(email);
+    console.log(result);
+    res.status(200).json({ message: "NEW_EMAIL" });
   } catch (err) {
     console.log(err);
+    res.status(err.statusCode).json({ message: err.message });
   }
-
-  res.status(err.statusCode).json({ message: err.message });
 };
 
 const signup = async (req, res) => {
@@ -28,7 +31,7 @@ const signup = async (req, res) => {
     const {
       email,
       password,
-      name,
+      username,
       phoneNumber,
       address,
       birthDate,
@@ -39,7 +42,7 @@ const signup = async (req, res) => {
     const REQUIRED_KEYS = {
       email,
       password,
-      name,
+      username,
       phoneNumber,
       address,
       birthDate,
@@ -57,7 +60,7 @@ const signup = async (req, res) => {
     await userService.signup(
       email,
       password,
-      name,
+      username,
       phoneNumber,
       address,
       birthDate,
@@ -87,19 +90,22 @@ const login = async (req, res) => {
     Object.keys(REQUIRED_KEYS).map((key) => {
       if (!REQUIRED_KEYS[key]) {
         const error = new Error(`KEY_ERROR: ${key}`);
-        err.statusCode = 400;
+        error.statusCode = 400;
         throw error;
       }
     });
 
     const token = await userService.login(email, password);
     console.log(token);
+
     res.status(200).json({ message: "LOGIN_SUCCESS", token: token });
   } catch (err) {
     console.log(err);
     res.status(err.statusCode).json({ message: err.message });
   }
 };
+
+//logout
 
 module.exports = {
   signup,
