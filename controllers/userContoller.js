@@ -92,14 +92,8 @@ const login = async (req, res) => {
       }
     });
 
-    await userService.login(email, password);
-
-    const isSame = bcrypt.compareSync(password, existingUser.password);
-    await userService.login(isSame);
-    console.log("isSamePassword: ", isSame);
-
-    const token = jwt.sign({ id: existingUser.id }, process.env.SECRET_KEY);
-
+    const token = await userService.login(email, password);
+    console.log(token);
     res.status(200).json({ message: "LOGIN_SUCCESS", token: token });
   } catch (err) {
     console.log(err);

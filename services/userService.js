@@ -1,10 +1,11 @@
 const userDao = require("../models/userDao");
-const {
-  password_validation,
-  phoneNumber_validation,
-  birthDate_validation,
-} = require("../validationRule");
+// const {
+//   password_validation,
+//   phoneNumber_validation,
+//   birthDate_validation,
+// } = require("../validationRule");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const doubleCheckEmail = async (email) => {
   await userDao.doubleCheckEmail(email);
@@ -27,22 +28,22 @@ const signup = async (
     throw new Error("EMAIL_INVALID");
   }
 
-  if (!email.match(email_validation)) {
-    throw new Error("EMAIL_INVALID");
-  }
-  console.log(password_validation.test(password));
+  // if (!email.match(email_validation)) {
+  //   throw new Error("EMAIL_INVALID");
+  // }
+  // console.log(password_validation.test(password));
 
-  if (!password.match(password_validation)) {
-    throw new Error("PASSWORD_INVALID");
-  }
+  // if (!password.match(password_validation)) {
+  //   throw new Error("PASSWORD_INVALID");
+  // }
 
-  if (!phoneNumber.match(phoneNumber_validation)) {
-    throw new Error("PHONENUMBER_INVALID");
-  }
+  // if (!phoneNumber.match(phoneNumber_validation)) {
+  //   throw new Error("PHONENUMBER_INVALID");
+  // }
 
-  if (!birthDate.match(birthDate_validation)) {
-    throw new Error("BIRTHDATE_INVALID");
-  }
+  // if (!birthDate.match(birthDate_validation)) {
+  //   throw new Error("BIRTHDATE_INVALID");
+  // }
 
   const hashedPw = bcrypt.hashSync(password, bcrypt.genSaltSync());
 
@@ -64,8 +65,9 @@ const login = async (email, password) => {
   if (!email.includes("@") || !email.includes(".")) {
     throw new Error("EMAIL_INVALID");
   }
+  //password validation
 
-  await userDao.login(email, password);
+  let existingUser = await userDao.login(email);
 
   // 2. user 존재안할 시 에러처리
   if (!existingUser) {
@@ -74,12 +76,17 @@ const login = async (email, password) => {
     throw error;
   }
 
-  // 3. 비번 틀릴시 에러처리
+  // 3. user 존재하나 비번 틀릴시 에러처리
+  const isSame = bcrypt.compareSync(password, existingUser.password);
+
   if (!isSame) {
     const error = new Error("INVALID_PASSWORD");
     error.statusCode = 400;
     throw error;
   }
+
+  const token = jwt.sign({ id: existingUser.id }, process.env.SECRET_KEY);
+  return token;
 };
 
 module.exports = {

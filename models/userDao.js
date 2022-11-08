@@ -30,8 +30,8 @@ INSERT INTO users (email, password, name, phoneNumber, address, birthDate, gende
 const login = async (email) => {
   // user 존재 체크
   const [existingUser] = await myDataSource.query(`
-SELECT email, password FROM users WHERE email = '${email}`);
-  console.log("USER: ", existingUser);
+SELECT email, password FROM users WHERE email = '${email}'`);
+  return existingUser;
 };
 
 module.exports = {
