@@ -54,7 +54,6 @@ const login = async (email, password) => {
   //password validation
 
   let existingUser = await userDao.login(email);
-
   // 2. user 존재안할 시 에러처리
   if (!existingUser) {
     const error = new Error("USER_DOES_NOT_EXIST");
@@ -64,14 +63,14 @@ const login = async (email, password) => {
 
   // 3. user 존재하나 비번 틀릴시 에러처리
   const isSame = bcrypt.compareSync(password, existingUser.password);
-
+  console.log(isSame);
   if (!isSame) {
     const error = new Error("INVALID_PASSWORD");
     error.statusCode = 400;
     throw error;
   }
 
-  const token = jwt.sign({ id: existingUser.id }, process.env.SECRET_KEY);
+  const token = jwt.sign({ id: existingUser.id }, jwtSecret);
   return token;
 };
 
