@@ -155,7 +155,6 @@ module.exports = {
   getProducts,
   getProductsByCategory,
   productData,
-  LineUpToNew,
   LineUpToCheap,
   getReviewByProduct,
   orderProduct,

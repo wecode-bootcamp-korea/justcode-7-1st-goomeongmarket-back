@@ -8,11 +8,8 @@ router.get("/main", controller.getProducts);
 router.post("/category/:categoryId", controller.getProductsByCategory);
 //new 보내기
 router.post("/new", controller.getNewProduct);
-
 // 제품별로 보내기
 router.post("/goods/:productId", controller.product);
-//신상품 순으로 보내기930125
-router.get("/newproduct", controller.LineUpToNew);
 //알뜰제품 순으로 보내기
 router.get("/cheapproduct", controller.LineUpToCheap);
 //상세 페이지 밑 리뷰

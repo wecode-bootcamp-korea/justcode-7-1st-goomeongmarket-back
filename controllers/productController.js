@@ -111,7 +111,6 @@ module.exports = {
   getProducts,
   getProductsByCategory,
   product,
-  LineUpToNew,
   LineUpToCheap,
   getReviewByProduct,
   orderProduct,
