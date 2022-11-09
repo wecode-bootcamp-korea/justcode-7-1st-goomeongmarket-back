@@ -3,9 +3,20 @@ const myDataSource = require("./index");
 //----------------------------------------------------------------
 
 const getProducts = async () => {
-  const result = await myDataSource.query(
-    `select products.*, T.image_url from products INNER JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id`
-  );
+  const result = await myDataSource.query(`
+    SELECT 
+    products.id,
+    products.name as title,
+    products.price,
+    products.inventory_number,
+    products.scale,
+    products.country_id,
+    products.sale,
+    products.created_at,
+    products.updated_at,
+    T.image_url as img
+    FROM products 
+    INNER JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id`);
   return result;
 };
 
@@ -33,7 +44,18 @@ const getProductsByCategory = async (category_id, sorterd_by) => {
 };
 const productData = async (product_id) => {
   const result = await myDataSource.query(
-    `select * from products where products.id = ${product_id}`
+    `select 
+    products.id,
+    products.name as title,
+    products.sub_name,
+    products.price,
+    countries.name as country_id,
+    products.created_at,
+    T.image_url as img
+    from products 
+    JOIN countries ON countries.id = products.country_id
+    INNER JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id
+    where products.id = ${product_id}`
   );
   return result;
 };
