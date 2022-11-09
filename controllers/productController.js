@@ -41,7 +41,7 @@ const product = async (req, res) => {
   }
 };
 //결재----------------------------------------------------------------------
-const oderProduct = async (req, res) => {
+const orderProduct = async (req, res) => {
   try {
     const { product_id, ordered_number } = req.body;
     const { token } = req.headers;
@@ -58,7 +58,7 @@ const oderProduct = async (req, res) => {
       throw new Error("ERROR: LOGIN_REQUESTED");
     }
 
-    const result = await productservice.oderProduct(
+    const result = await productservice.orderProduct(
       token,
       product_id,
       ordered_number
@@ -83,10 +83,20 @@ const getReviewByProduct = async (req, res) => {
 
 // 신상품 순으로 제품 보내기-------------------------------------------------------------------
 const getNewProduct = async (req, res) => {
-  const category_id = req.query.category_id;
   const sorted_by = req.query.sorted_by;
   try {
     const result = await productservice.getNewProduct(category_id, sorted_by);
+    res.status(200).json({ data: result });
+  } catch (err) {
+    console.log(err);
+    res.status(err.status).json({ message: err.message });
+  }
+};
+
+const getBsetProduct = async (req, res) => {
+  const sorted_by = req.query.sorted_by;
+  try {
+    const result = await productservice.getBsetProduct(category_id, sorted_by);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
@@ -98,9 +108,10 @@ module.exports = {
   getProducts,
   getProductsByCategory,
   product,
-  oderProduct,
+  orderProduct,
   getReviewByProduct,
   getNewProduct,
+  getBsetProduct,
 };
 /*
 sorted_type = 2 -> 제품이름 순

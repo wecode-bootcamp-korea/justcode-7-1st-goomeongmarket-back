@@ -1,6 +1,6 @@
 // const bcrypt = require("bcryptjs");
 // const salt = bcrypt.genSaltSync();
-// const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 // const secret_key = process.env.SECRET_KEY;
 const jwtSecret = process.env.JWT_SECRET;
 const productModel = require("../models/productDao");
@@ -38,10 +38,10 @@ const productData = async (product_id) => {
   }
 };
 
-const oderProduct = async (token, product_id, ordered_number) => {
+const orderProduct = async (token, product_id, ordered_number) => {
   const user = jwt.verify(token, jwtSecret);
   const user_id = user.id;
-  const result = await productModel.oderProduct(
+  const result = await productModel.orderProduct(
     user_id,
     product_id,
     ordered_number
@@ -60,8 +60,20 @@ const getReviewByProduct = async (product_id) => {
   }
 };
 
-const getNewProduct = async (category_id, sorted_by) => {
-  const result = await productModel.getNewProduct(category_id, sorted_by);
+const getNewProduct = async (sorted_by) => {
+  const result = await productModel.getNewProduct(sorted_by);
+  console.log(result);
+  if (!result.length) {
+    const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
+    error.status = 400;
+    throw error;
+  } else {
+    return result;
+  }
+};
+
+const getBsetProduct = async (sorted_by) => {
+  const result = await productModel.getBsetProduct(sorted_by);
   console.log(result);
   if (!result.length) {
     const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
@@ -75,7 +87,8 @@ module.exports = {
   getProducts,
   getProductsByCategory,
   productData,
-  oderProduct,
+  orderProduct,
   getReviewByProduct,
   getNewProduct,
+  getBsetProduct,
 };

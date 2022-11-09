@@ -4,7 +4,7 @@ const { myDataSource } = require("./index.js");
 
 const getProducts = async () => {
   const result = await myDataSource.query(
-    `select products.*, T.image_url from products INNER JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id`
+    `select products.*, T.image_url from products LEFT JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id`
   );
   return result;
 };
@@ -38,7 +38,7 @@ const productData = async (product_id) => {
   return result;
 };
 
-const oderProduct = async (user_id, product_id, ordered_number) => {
+const orderProduct = async (user_id, product_id, ordered_number) => {
   const result = await myDataSource.query(
     `insert into ordered_products (user_id, product_id, ordered_number) values (${user_id},${product_id},${ordered_number}) `
   );
@@ -141,7 +141,7 @@ module.exports = {
   getProducts,
   getProductsByCategory,
   productData,
-  oderProduct,
+  orderProduct,
   getReviewByProduct,
   getNewProduct,
   getBsetProduct,
