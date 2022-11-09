@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+// const bcrypt = require("bcryptjs");
 const myDataSource = require("../models/index");
 
 //이메일 중복확인
