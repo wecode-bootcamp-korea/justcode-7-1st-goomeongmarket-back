@@ -1,13 +1,13 @@
 // const bcrypt = require("bcryptjs");
 // const salt = bcrypt.genSaltSync();
-// const jwt = require("jsonwebtoken");
-// const secret_key = process.env.SECRET_KEY;
+const jwt = require("jsonwebtoken");
+const secret_key = process.env.JWT_SECRET;
 
 const productModel = require("../models/productDao");
 //-------------------------------------------------------------------------------
 
 const getProducts = async () => {
-  const result = await productModel.getProducts;
+  const result = await productModel.getProducts();
   return result;
 };
 // sorted_type = 신상품순, 판매량순, 해택순, 낮은 가격순, 높은 가격순
@@ -46,6 +46,17 @@ const LineUpToNew = async () => {
   return result;
 };
 
+const LineUpToCheap = async (sorted_by) => {
+  const result = await productModel.LineUpToNew(sorted_by);
+  if (!result.length) {
+    const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
+    error.status = 400;
+    throw error;
+  } else {
+    return result;
+  }
+};
+
 const getReviewByProduct = async (product_id) => {
   const result = await productModel.getReviewByProduct(product_id);
   if (!result.length) {
@@ -56,10 +67,19 @@ const getReviewByProduct = async (product_id) => {
     return result;
   }
 };
+
+const payment = async (id, put_quantity, token) => {
+  let user = jwt.verify(token, secret_key);
+  const user_id = user.id;
+  await productModel.payment(user_id, id, put_quantity);
+};
+
 module.exports = {
   getProducts,
   getProductsByCategory,
   productData,
   LineUpToNew,
+  LineUpToCheap,
   getReviewByProduct,
+  payment,
 };

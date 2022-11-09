@@ -5,7 +5,7 @@ const productservice = require("../services/productService");
 //메인에 전부 보내기
 const getProducts = async (req, res) => {
   try {
-    const result = await productservice.getProducts;
+    const result = await productservice.getProducts();
     res.status(200).json({ products: result });
   } catch (err) {
     console.log(err);
@@ -50,6 +50,19 @@ const LineUpToNew = async (req, res) => {
     res.status(err.status).json({ message: err.message });
   }
 };
+
+//알뜰제품 순으로 보내기
+const LineUpToCheap = async (req, res) => {
+  try {
+    const sorted_by = req.query.sorted_by;
+    const result = await productservice.LineUpToNew(sorted_by);
+    res.status(200).json({ products: result });
+  } catch (err) {
+    console.log(err);
+    res.status(err.status).json({ message: err.message });
+  }
+};
+
 //제품 밑 리뷰 보기-------------------------------------------------------------------------
 const getReviewByProduct = async (req, res) => {
   const product_id = req.params.productId;
@@ -61,10 +74,24 @@ const getReviewByProduct = async (req, res) => {
     res.status(err.status).json({ message: err.message });
   }
 };
+
+const payment = async (req, res) => {
+  const { id, put_quantity } = req.body;
+  const { token } = req.headers;
+  await productservice.payment(id, put_quantity, token);
+  try {
+    res.status(200).json({ message: "success" });
+  } catch (err) {
+    console.log(err);
+    res.status(err.status).json({ message: err.message });
+  }
+};
 module.exports = {
   getProducts,
   getProductsByCategory,
   product,
   LineUpToNew,
+  LineUpToCheap,
   getReviewByProduct,
+  payment,
 };
