@@ -5,7 +5,7 @@ CREATE TABLE products (
     sub_name varchar(2000),
     brand_id int not null,
     category_id int not null,
-    price decimal(4,2) not null,
+    price int not null,
     inventory_number int not null,
     scale varchar(500) not null,
     country_id int not null,
