@@ -87,7 +87,6 @@ module.exports = {
   getProducts,
   getProductsByCategory,
   productData,
-  LineUpToNew,
   LineUpToCheap,
   orderProduct,
   getReviewByProduct,
