@@ -6,6 +6,7 @@ const doubleCheckEmail = async (email) => {
   const user = await myDataSource.query(`
     SELECT id, email FROM users WHERE email = '${email}'
     `);
+  console.log(user);
   return user;
 };
 
