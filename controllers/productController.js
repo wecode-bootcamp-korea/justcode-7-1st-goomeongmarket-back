@@ -7,6 +7,7 @@ const getProducts = async (req, res) => {
   // const
   try {
     const result = await productservice.getProducts();
+    console.log(result);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
@@ -85,8 +86,10 @@ const LineUpToCheap = async (req, res) => {
 //제품 밑 리뷰 보기-------------------------------------------------------------------------
 const getReviewByProduct = async (req, res) => {
   const product_id = req.params.productId;
+  // console.log(product_id);
   try {
     const result = await productservice.getReviewByProduct(product_id);
+    console.log(result);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);

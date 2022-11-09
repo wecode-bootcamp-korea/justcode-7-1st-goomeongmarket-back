@@ -3,9 +3,20 @@ const myDataSource = require("./index");
 //----------------------------------------------------------------
 
 const getProducts = async () => {
-  const result = await myDataSource.query(
-    `select products.*, T.image_url from products INNER JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id`
-  );
+  const result = await myDataSource.query(`
+    SELECT 
+    products.id,
+    products.name as title,
+    products.price,
+    products.inventory_number,
+    products.scale,
+    products.country_id,
+    products.sale,
+    products.created_at,
+    products.updated_at,
+    T.image_url as img
+    FROM products 
+    INNER JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id`);
   return result;
 };
 
