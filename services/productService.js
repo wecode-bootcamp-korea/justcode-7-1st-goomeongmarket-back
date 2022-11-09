@@ -62,6 +62,7 @@ const getReviewByProduct = async (product_id) => {
 
 const getNewProduct = async (category_id, sorted_by) => {
   const result = await productModel.getNewProduct(category_id, sorted_by);
+  console.log(result);
   if (!result.length) {
     const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
     error.status = 400;

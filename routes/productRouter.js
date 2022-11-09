@@ -16,4 +16,5 @@ router.post("/order", controller.oderProduct);
 //상세 페이지 밑 리뷰
 router.get("/review/:productId", controller.getReviewByProduct);
 
+router.post("/best", controller.getProducts);
 module.exports = router;
