@@ -1,18 +1,19 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const http = require('http');
-const express = require('express');
-const cors = require('cors');
+const { createApp } = require("./app");
+const router = require("./routes");
 
-const routes = require('./routes');
+const startServer = async () => {
+  const app = createApp();
+  const PORT = process.env.PORT;
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(routes);
+  try {
+    app.listen(PORT, () => {
+      console.log(`Listening on Port http://localhost:${PORT}/`);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-const server = http.createServer(app);
-const PORT = process.env.PORT || 10010;
-server.listen(PORT, () => {
-  console.log(`server start : http://localhost:${PORT}/`);
-});
+startServer();
