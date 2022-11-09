@@ -44,7 +44,18 @@ const getProductsByCategory = async (category_id, sorterd_by) => {
 };
 const productData = async (product_id) => {
   const result = await myDataSource.query(
-    `select * from products where products.id = ${product_id}`
+    `select 
+    products.id,
+    products.name as title,
+    products.sub_name,
+    products.price,
+    countries.name as country_id,
+    products.created_at,
+    T.image_url as img
+    from products 
+    JOIN countries ON countries.id = products.country_id
+    INNER JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id
+    where products.id = ${product_id}`
   );
   return result;
 };

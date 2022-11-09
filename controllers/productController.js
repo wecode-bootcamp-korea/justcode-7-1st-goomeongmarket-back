@@ -7,7 +7,6 @@ const getProducts = async (req, res) => {
   // const
   try {
     const result = await productservice.getProducts();
-    console.log(result);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
@@ -31,7 +30,7 @@ const getProductsByCategory = async (req, res) => {
   }
 };
 //제품별로 보내기-----------------------------------------------------------------------
-const product = async (req, res) => {
+const productData = async (req, res) => {
   const product_id = req.params.productId;
   try {
     const result = await productservice.productData(product_id);
@@ -46,7 +45,7 @@ const orderProduct = async (req, res) => {
   try {
     const { product_id, ordered_number } = req.body;
     const { token } = req.headers;
-
+    console.log(product_id);
     const required_keys = { product_id, ordered_number };
 
     Object.keys(required_keys).map((key) => {
@@ -59,12 +58,8 @@ const orderProduct = async (req, res) => {
       throw new Error("ERROR: LOGIN_REQUESTED");
     }
 
-    const result = await productservice.oderProduct(
-      token,
-      product_id,
-      ordered_number
-    );
-    res.status(200).json({ data: result });
+    await productservice.orderProduct(token, product_id, ordered_number);
+    res.status(200).json({ message: "success" });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
@@ -89,7 +84,7 @@ const getReviewByProduct = async (req, res) => {
   // console.log(product_id);
   try {
     const result = await productservice.getReviewByProduct(product_id);
-    console.log(result);
+    // console.log(result);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
@@ -113,7 +108,7 @@ const getNewProduct = async (req, res) => {
 module.exports = {
   getProducts,
   getProductsByCategory,
-  product,
+  productData,
   LineUpToCheap,
   getReviewByProduct,
   orderProduct,
