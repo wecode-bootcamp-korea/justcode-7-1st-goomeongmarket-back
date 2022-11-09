@@ -63,12 +63,25 @@ const orderProduct = async (req, res) => {
       product_id,
       ordered_number
     );
-    res.status(200).json({ data: result });
+    res.status(200).json({ message: "주문완료" });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
   }
 };
+
+//알뜰제품 순으로 보내기
+const LineUpToCheap = async (req, res) => {
+  try {
+    const sorted_by = req.query.sorted_by;
+    const result = await productservice.LineUpToNew(sorted_by);
+    res.status(200).json({ products: result });
+  } catch (err) {
+    console.log(err);
+    res.status(err.status).json({ message: err.message });
+  }
+};
+
 //제품 밑 리뷰 보기-------------------------------------------------------------------------
 const getReviewByProduct = async (req, res) => {
   const product_id = req.params.productId;
@@ -108,8 +121,9 @@ module.exports = {
   getProducts,
   getProductsByCategory,
   product,
-  orderProduct,
+  LineUpToCheap,
   getReviewByProduct,
+  orderProduct,
   getNewProduct,
   getBsetProduct,
 };

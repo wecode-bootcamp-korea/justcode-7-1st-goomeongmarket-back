@@ -1,10 +1,10 @@
-const { myDataSource } = require("./index.js");
+const myDataSource = require("./index");
 
 //----------------------------------------------------------------
 
 const getProducts = async () => {
   const result = await myDataSource.query(
-    `select products.*, T.image_url from products LEFT JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id`
+    `select products.name, products.price, T.image_url from products INNER JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id`
   );
   return result;
 };
@@ -42,6 +42,19 @@ const orderProduct = async (user_id, product_id, ordered_number) => {
   const result = await myDataSource.query(
     `insert into ordered_products (user_id, product_id, ordered_number) values (${user_id},${product_id},${ordered_number}) `
   );
+  return result;
+};
+
+const LineUpToCheap = async (sorted_by) => {
+  const result = await myDataSource.query(`
+      SELECT products.*, products.name as title, OT.sum
+      FROM products
+      INNER JOIN categories ON products.category_id = categories.id 
+      LEFT JOIN (select product_id, sum(ordered_number) as sum FROM ordered_products group by product_id) AS OT 
+      ON products.id = OT.product_id 
+      LEFT JOIN (select * from product_images order by created_at desc limit 1) AS IT  
+      ON products.id = IT.product_id order by ${sorted_by} 
+  `);
   return result;
 };
 
@@ -137,12 +150,14 @@ const getBsetProduct = async (sorted_by) => {
     return result;
   }
 };
+
 module.exports = {
   getProducts,
   getProductsByCategory,
   productData,
-  orderProduct,
+  LineUpToCheap,
   getReviewByProduct,
+  orderProduct,
   getNewProduct,
   getBsetProduct,
 };

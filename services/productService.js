@@ -1,7 +1,7 @@
 // const bcrypt = require("bcryptjs");
 // const salt = bcrypt.genSaltSync();
+
 const jwt = require("jsonwebtoken");
-// const secret_key = process.env.SECRET_KEY;
 const jwtSecret = process.env.JWT_SECRET;
 const productModel = require("../models/productDao");
 //-------------------------------------------------------------------------------
@@ -49,6 +49,17 @@ const orderProduct = async (token, product_id, ordered_number) => {
   return result;
 };
 
+const LineUpToCheap = async (sorted_by) => {
+  const result = await productModel.LineUpToNew(sorted_by);
+  if (!result.length) {
+    const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
+    error.status = 400;
+    throw error;
+  } else {
+    return result;
+  }
+};
+
 const getReviewByProduct = async (product_id) => {
   const result = await productModel.getReviewByProduct(product_id);
   if (!result.length) {
@@ -83,10 +94,12 @@ const getBsetProduct = async (sorted_by) => {
     return result;
   }
 };
+
 module.exports = {
   getProducts,
   getProductsByCategory,
   productData,
+  LineUpToCheap,
   orderProduct,
   getReviewByProduct,
   getNewProduct,
