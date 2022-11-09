@@ -59,9 +59,13 @@ const LineUpToCheap = async (sorted_by) => {
 };
 
 const getReviewByProduct = async (product_id) => {
-  const result = await myDataSource.query(
-    `select users.username as user_name, products.name as title, comments.comment, comments.updated_at from comments INNER JOIN users ON comments.user_id=users.id INNER JOIN products ON comments.product_id=products.id where product_id = ${product_id}`
-  );
+  const result = await myDataSource.query(`
+      SELECT users.username, comments.comment, comments.updated_at 
+      FROM comments 
+      INNER JOIN users ON comments.user_id = users.id 
+      INNER JOIN products ON comments.product_id = products.id 
+      WHERE product_id = ${product_id}
+    `);
   return result;
 };
 
