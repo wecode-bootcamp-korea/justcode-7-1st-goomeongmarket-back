@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 const jwtSecret = process.env.JWT_SECRET;
 const productModel = require("../models/productDao");
 //-------------------------------------------------------------------------------
-console.log("1");
 
 const getProducts = async () => {
   const result = await productModel.getProducts();
