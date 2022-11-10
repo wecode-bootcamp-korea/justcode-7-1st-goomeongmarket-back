@@ -1,6 +1,7 @@
 const myDataSource = require("./index");
 
 //----------------------------------------------------------------
+console.log("1");
 
 const getProducts = async () => {
   const result = await myDataSource.query(`
