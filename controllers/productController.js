@@ -30,7 +30,7 @@ const getProductsByCategory = async (req, res) => {
   }
 };
 //제품별로 보내기-----------------------------------------------------------------------
-const product = async (req, res) => {
+const productData = async (req, res) => {
   const product_id = req.params.productId;
   try {
     const result = await productservice.productData(product_id);
@@ -45,7 +45,8 @@ const orderProduct = async (req, res) => {
   try {
     const { product_id, ordered_number } = req.body;
     const { token } = req.headers;
-
+    console.log(product_id);
+    console.log(ordered_number);
     const required_keys = { product_id, ordered_number };
 
     Object.keys(required_keys).map((key) => {
@@ -58,12 +59,8 @@ const orderProduct = async (req, res) => {
       throw new Error("ERROR: LOGIN_REQUESTED");
     }
 
-    const result = await productservice.oderProduct(
-      token,
-      product_id,
-      ordered_number
-    );
-    res.status(200).json({ data: result });
+    await productservice.orderProduct(token, product_id, ordered_number);
+    res.status(200).json({ message: "success" });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
@@ -74,8 +71,8 @@ const orderProduct = async (req, res) => {
 const LineUpToCheap = async (req, res) => {
   try {
     const sorted_by = req.query.sorted_by;
-    const result = await productservice.LineUpToNew(sorted_by);
-    res.status(200).json({ products: result });
+    const result = await productservice.LineUpToCheap(sorted_by);
+    res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
@@ -85,8 +82,10 @@ const LineUpToCheap = async (req, res) => {
 //제품 밑 리뷰 보기-------------------------------------------------------------------------
 const getReviewByProduct = async (req, res) => {
   const product_id = req.params.productId;
+  // console.log(product_id);
   try {
     const result = await productservice.getReviewByProduct(product_id);
+    // console.log(result);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
@@ -96,10 +95,22 @@ const getReviewByProduct = async (req, res) => {
 
 // 신상품 순으로 제품 보내기-------------------------------------------------------------------
 const getNewProduct = async (req, res) => {
+  const category = req.query.category;
+  const sorted_by = req.query.sorted_by;
+  try {
+    const result = await productservice.getNewProduct(category, sorted_by);
+    res.status(200).json({ data: result });
+  } catch (err) {
+    console.log(err);
+    res.status(err.status).json({ message: err.message });
+  }
+};
+
+const getBsetProduct = async (req, res) => {
   const category_id = req.query.category_id;
   const sorted_by = req.query.sorted_by;
   try {
-    const result = await productservice.getNewProduct(category_id, sorted_by);
+    const result = await productservice.getBsetProduct(category_id, sorted_by);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
@@ -110,11 +121,12 @@ const getNewProduct = async (req, res) => {
 module.exports = {
   getProducts,
   getProductsByCategory,
-  product,
+  productData,
   LineUpToCheap,
   getReviewByProduct,
   orderProduct,
   getNewProduct,
+  getBsetProduct,
 };
 /*
 sorted_type = 2 -> 제품이름 순

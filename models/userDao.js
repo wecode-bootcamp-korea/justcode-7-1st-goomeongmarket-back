@@ -1,11 +1,12 @@
 // const bcrypt = require("bcryptjs");
-const myDataSource = require("../models/index");
+const myDataSource = require("./index");
 
 //이메일 중복확인
 const doubleCheckEmail = async (email) => {
   const user = await myDataSource.query(`
     SELECT id, email FROM users WHERE email = '${email}'
     `);
+  console.log(user);
   return user;
 };
 
