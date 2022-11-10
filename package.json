@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "distribute": "npm i && pm2 start server.js --name 프로젝트이름 -i max",
     "start": "nodemon server.js"
   },
   "author": "",
