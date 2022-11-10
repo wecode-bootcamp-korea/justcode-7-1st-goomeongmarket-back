@@ -73,8 +73,8 @@ const getReviewByProduct = async (product_id) => {
   }
 };
 
-const getNewProduct = async (category, sorted_by) => {
-  const result = await productModel.getNewProduct(category, sorted_by);
+const getNewProduct = async (category_id, sorted_by) => {
+  const result = await productModel.getNewProduct(category_id, sorted_by);
   if (!result.length) {
     const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
     error.status = 400;
@@ -86,6 +86,7 @@ const getNewProduct = async (category, sorted_by) => {
 
 const getBsetProduct = async (category_id, sorted_by) => {
   const result = await productModel.getBsetProduct(category_id, sorted_by);
+
   if (!result.length) {
     const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
     error.status = 400;
