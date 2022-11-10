@@ -36,7 +36,6 @@ const signup = async (req, res) => {
       address,
       birthDate,
       gender_id,
-      hashedPw,
     } = req.body;
 
     const REQUIRED_KEYS = {
@@ -64,8 +63,7 @@ const signup = async (req, res) => {
       phoneNumber,
       address,
       birthDate,
-      gender_id,
-      hashedPw
+      gender_id
     );
 
     res.status(201).json({ message: "USER_CREATED" });
