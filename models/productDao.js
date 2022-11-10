@@ -3,6 +3,7 @@ const myDataSource = require("./index");
 //----------------------------------------------------------------
 
 const getProducts = async () => {
+
   const result = await myDataSource.query(`
     SELECT 
     products.id,
@@ -17,6 +18,7 @@ const getProducts = async () => {
     T.image_url as img
     FROM products 
     INNER JOIN (select * from product_images order by created_at desc) AS T ON T.product_id=products.id`);
+
   return result;
 };
 
@@ -68,16 +70,47 @@ const orderProduct = async (user_id, product_id, ordered_number) => {
 };
 
 const LineUpToCheap = async (sorted_by) => {
-  const result = await myDataSource.query(`
-      SELECT products.*, products.name as title, OT.sum
-      FROM products
-      INNER JOIN categories ON products.category_id = categories.id 
-      LEFT JOIN (select product_id, sum(ordered_number) as sum FROM ordered_products group by product_id) AS OT 
-      ON products.id = OT.product_id 
-      LEFT JOIN (select * from product_images order by created_at desc limit 1) AS IT  
-      ON products.id = IT.product_id order by ${sorted_by} 
-  `);
-  return result;
+  if (sorted_by > 0) {
+    const result = await myDataSource.query(
+      //   `SELECT products.*, products.name as title, IT.image_url as img, OT.*
+      // FROM products
+      //   INNER JOIN categories ON products.category_id = categories.id
+      //   LEFT JOIN (select product_id, sum(ordered_number) as sum FROM ordered_products group by product_id) AS OT
+      //   ON products.id = OT.product_id
+      //   LEFT JOIN (select * from product_images order by created_at desc limit 1) AS IT
+      //   ON products.id = IT.product_id order by ${sorted_by}`
+      `select products.*, products.name as title, IT.image_url as img, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by ${sorted_by}`
+    );
+    return result;
+  }
+  if (sorted_by < 0) {
+    const result = await myDataSource.query(
+      //   `SELECT products.*, products.name as title, IT.image_url as img, OT.*
+      // FROM products
+      //     INNER JOIN categories ON products.category_id = categories.id
+      //     LEFT JOIN (select product_id, sum(ordered_number) as sum FROM ordered_products group by product_id) AS OT
+      //     ON products.id = OT.product_id
+      //     LEFT JOIN (select * from product_images order by created_at desc limit 1) AS IT
+      //     ON products.id = IT.product_id order by ${sorted_by * -1} DESC `
+      `select products.*, products.name as title, IT.image_url as img, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by ${
+        sorted_by * -1
+      } desc`
+    );
+    return result;
+  }
+  if (!sorted_by) {
+    const result = await myDataSource.query(
+      // ` SELECT products.*, products.name as title, IT.image_url as img, OT.*
+      //   FROM products
+      //   INNER JOIN categories ON products.category_id = categories.id
+      //   LEFT JOIN (select product_id, sum(ordered_number) as sum FROM ordered_products group by product_id) AS OT
+      //   ON products.id = OT.product_id
+      //   LEFT JOIN (select * from product_images order by created_at desc limit 1) AS IT
+      //   ON products.id = IT.product_id order by 6`
+      `select products.*, products.name as title, IT.image_url as img, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by 6`
+    );
+    return result;
+  }
 };
 
 const getReviewByProduct = async (product_id) => {
@@ -91,11 +124,11 @@ const getReviewByProduct = async (product_id) => {
   return result;
 };
 
-const getNewProduct = async (sorted_by) => {
+const getNewProduct = async (category, sorted_by) => {
   //sort>0, category x
   if (sorted_by > 0) {
     const result = await myDataSource.query(
-      `select products.*, products.name as title, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by ${sorted_by}`
+      `select products.*, products.name as title, IT.image_url as img, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by ${sorted_by}`
       //   `select
       //         JSON_ARRAYAGG(
       //             JSON_OBJECT(
@@ -130,7 +163,7 @@ const getNewProduct = async (sorted_by) => {
   //sort<0, category x
   if (sorted_by < 0) {
     const result = await myDataSource.query(
-      `select products.*, products.name as title, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by ${
+      `select products.*, products.name as title, IT.image_url as img, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by ${
         sorted_by * -1
       } desc`
     );
@@ -139,7 +172,7 @@ const getNewProduct = async (sorted_by) => {
   //sort x, category x
   if (!sorted_by) {
     const result = await myDataSource.query(
-      `select products.*, products.name as title, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by 11`
+      `select products.*, products.name as title, IT.image_url as img, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by 11`
     );
     return result;
   }
@@ -151,18 +184,18 @@ const getNewProduct = async (sorted_by) => {
   // return result;
 };
 
-const getBsetProduct = async (sorted_by) => {
+const getBsetProduct = async (category_id, sorted_by) => {
   //sort>0, category x
   if (sorted_by > 0) {
     const result = await myDataSource.query(
-      `select products.*, products.name as title, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by ${sorted_by}`
+      `select products.*, products.name as title, IT.image_url as img, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id  order by ${sorted_by}`
     );
     return result;
   }
   //sort<0, category x
   if (sorted_by < 0) {
     const result = await myDataSource.query(
-      `select products.*, products.name as title, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by ${
+      `select products.*, products.name as title, IT.image_url as img, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by ${
         sorted_by * -1
       } desc`
     );
@@ -171,7 +204,7 @@ const getBsetProduct = async (sorted_by) => {
   //sort x, category x
   if (!sorted_by) {
     const result = await myDataSource.query(
-      `select products.*, products.name as title, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by 16`
+      `select  products.* , products.name as title, IT.image_url as img, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = ot.product_id left join (select * from product_images order by created_at desc limit 1) AS IT  on products.id = IT.product_id order by 16`
     );
     return result;
   }
