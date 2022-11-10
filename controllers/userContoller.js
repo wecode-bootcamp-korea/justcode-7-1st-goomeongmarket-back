@@ -18,7 +18,6 @@ const doubleCheckEmail = async (req, res) => {
     });
 
     const result = await userService.doubleCheckEmail(email);
-    console.log(result);
     res.status(200).json({ message: "NEW_EMAIL" });
   } catch (err) {
     console.log(err);
@@ -94,7 +93,6 @@ const login = async (req, res) => {
     });
 
     const token = await userService.login(email, password);
-    console.log(token);
 
     res.status(200).json({ message: "LOGIN_SUCCESS", token: token });
   } catch (err) {

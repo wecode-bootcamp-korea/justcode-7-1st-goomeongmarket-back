@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecret = process.env.JWT_SECRET;
 const productModel = require("../models/productDao");
 //-------------------------------------------------------------------------------
+console.log("1");
 
 const getProducts = async () => {
   const result = await productModel.getProducts();
@@ -49,9 +50,8 @@ const orderProduct = async (token, product_id, ordered_number) => {
   return result;
 };
 
-const LineUpToCheap = async (sorted_by) => {
-  const result = await productModel.LineUpToCheap(sorted_by);
-  console.log(result);
+const LineUpToCheap = async (category_id, sorted_by) => {
+  const result = await productModel.LineUpToCheap(category_id, sorted_by);
   if (!result.length) {
     const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
     error.status = 400;
@@ -86,7 +86,6 @@ const getNewProduct = async (category_id, sorted_by) => {
 
 const getBsetProduct = async (category_id, sorted_by) => {
   const result = await productModel.getBsetProduct(category_id, sorted_by);
-
   if (!result.length) {
     const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
     error.status = 400;
