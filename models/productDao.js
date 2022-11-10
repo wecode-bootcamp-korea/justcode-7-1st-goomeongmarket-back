@@ -113,7 +113,7 @@ const LineUpToCheap = async (category_id, sorted_by) => {
 
 const getReviewByProduct = async (product_id) => {
   const result = await myDataSource.query(`
-    SELECT users.username, comments.comment, date_format(comments.updated_at, '%Y-%m-%d')
+    SELECT users.username, comments.comment, date_format(comments.updated_at, '%Y-%m-%d') as updated_at
     FROM comments 
     INNER JOIN users ON comments.user_id = users.id 
     INNER JOIN products ON comments.product_id = products.id 
