@@ -8,13 +8,14 @@ router.get("/main", controller.getProducts);
 router.post("/category/:categoryId", controller.getProductsByCategory);
 //new 보내기
 router.post("/new", controller.getNewProduct);
-
 // 제품별로 보내기
 router.post("/goods/:productId", controller.product);
-//주문내역 보내기-----------------------------------------------------다시 살펴봐야 함
-router.post("/order", controller.oderProduct);
+//알뜰제품 순으로 보내기
+router.post("/cheap", controller.LineUpToCheap);
 //상세 페이지 밑 리뷰
 router.get("/review/:productId", controller.getReviewByProduct);
+//주문내역 보내기-----------------------------------------------------다시 살펴봐야 함
+router.post("/order", controller.orderProduct);
+router.post("/best", controller.getBsetProduct);
 
-router.post("/best", controller.getProducts);
 module.exports = router;

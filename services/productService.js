@@ -1,7 +1,7 @@
 // const bcrypt = require("bcryptjs");
 // const salt = bcrypt.genSaltSync();
-// const jwt = require("jsonwebtoken");
-// const secret_key = process.env.SECRET_KEY;
+
+const jwt = require("jsonwebtoken");
 const jwtSecret = process.env.JWT_SECRET;
 const productModel = require("../models/productDao");
 //-------------------------------------------------------------------------------
@@ -38,10 +38,10 @@ const productData = async (product_id) => {
   }
 };
 
-const oderProduct = async (token, product_id, ordered_number) => {
+const orderProduct = async (token, product_id, ordered_number) => {
   const user = jwt.verify(token, jwtSecret);
   const user_id = user.id;
-  const result = await productModel.oderProduct(
+  const result = await productModel.orderProduct(
     user_id,
     product_id,
     ordered_number
@@ -49,19 +49,8 @@ const oderProduct = async (token, product_id, ordered_number) => {
   return result;
 };
 
-const getReviewByProduct = async (product_id) => {
-  const result = await productModel.getReviewByProduct(product_id);
-  if (!result.length) {
-    const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
-    error.status = 400;
-    throw error;
-  } else {
-    return result;
-  }
-};
-
-const getNewProduct = async (category_id, sorted_by) => {
-  const result = await productModel.getNewProduct(category_id, sorted_by);
+const LineUpToCheap = async (sorted_by) => {
+  const result = await productModel.LineUpToCheap(sorted_by);
   console.log(result);
   if (!result.length) {
     const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
@@ -71,11 +60,48 @@ const getNewProduct = async (category_id, sorted_by) => {
     return result;
   }
 };
+
+const getReviewByProduct = async (product_id) => {
+  const result = await productModel.getReviewByProduct(product_id);
+
+  if (!result.length) {
+    const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
+    error.status = 400;
+    throw error;
+  } else {
+    return result;
+  }
+};
+
+const getNewProduct = async (category, sorted_by) => {
+  const result = await productModel.getNewProduct(category, sorted_by);
+  if (!result.length) {
+    const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
+    error.status = 400;
+    throw error;
+  } else {
+    return result;
+  }
+};
+
+const getBsetProduct = async (category_id, sorted_by) => {
+  const result = await productModel.getBsetProduct(category_id, sorted_by);
+  if (!result.length) {
+    const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
+    error.status = 400;
+    throw error;
+  } else {
+    return result;
+  }
+};
+
 module.exports = {
   getProducts,
   getProductsByCategory,
   productData,
-  oderProduct,
+  LineUpToCheap,
+  orderProduct,
   getReviewByProduct,
   getNewProduct,
+  getBsetProduct,
 };
