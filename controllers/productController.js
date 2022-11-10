@@ -46,6 +46,7 @@ const orderProduct = async (req, res) => {
     const { product_id, ordered_number } = req.body;
     const { token } = req.headers;
     console.log(product_id);
+    console.log(ordered_number);
     const required_keys = { product_id, ordered_number };
 
     Object.keys(required_keys).map((key) => {
@@ -60,7 +61,6 @@ const orderProduct = async (req, res) => {
 
     await productservice.orderProduct(token, product_id, ordered_number);
     res.status(200).json({ message: "success" });
-
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
