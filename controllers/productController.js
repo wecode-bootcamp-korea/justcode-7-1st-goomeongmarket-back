@@ -18,6 +18,7 @@ const getProducts = async (req, res) => {
 const getProductsByCategory = async (req, res) => {
   const category_id = req.params.categoryId;
   const sorted_by = req.query.sorted_by;
+  console.log("1");
   try {
     const result = await productservice.getProductsByCategory(
       category_id,
