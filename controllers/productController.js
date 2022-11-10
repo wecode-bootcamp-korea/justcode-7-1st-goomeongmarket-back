@@ -46,6 +46,7 @@ const orderProduct = async (req, res) => {
     const { product_id, ordered_number } = req.body;
     const { token } = req.headers;
     console.log(product_id);
+    console.log(ordered_number);
     const required_keys = { product_id, ordered_number };
 
     Object.keys(required_keys).map((key) => {
@@ -69,9 +70,10 @@ const orderProduct = async (req, res) => {
 //알뜰제품 순으로 보내기
 const LineUpToCheap = async (req, res) => {
   try {
+    const category_id = req.query.category_id;
     const sorted_by = req.query.sorted_by;
-    const result = await productservice.LineUpToNew(sorted_by);
-    res.status(200).json({ products: result });
+    const result = await productservice.LineUpToCheap(category_id, sorted_by);
+    res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
     res.status(err.status).json({ message: err.message });
@@ -105,6 +107,18 @@ const getNewProduct = async (req, res) => {
   }
 };
 
+const getBsetProduct = async (req, res) => {
+  const category_id = req.query.category_id;
+  const sorted_by = req.query.sorted_by;
+  try {
+    const result = await productservice.getBsetProduct(category_id, sorted_by);
+    res.status(200).json({ data: result });
+  } catch (err) {
+    console.log(err);
+    res.status(err.status).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getProducts,
   getProductsByCategory,
@@ -113,6 +127,7 @@ module.exports = {
   getReviewByProduct,
   orderProduct,
   getNewProduct,
+  getBsetProduct,
 };
 /*
 sorted_type = 2 -> 제품이름 순
