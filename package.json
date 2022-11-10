@@ -4,21 +4,32 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "distribute": "npm i && pm2 start server.js --name 프로젝트이름 -i max",
     "start": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "bcryptjs": "^2.4.3",
     "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "nodemon": "^2.0.16",
+    "express": "^4.18.2",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.20",
+    "pm2": "^5.2.2",
     "prettier": "^2.7.1"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dbmate": "^1.0.3",
     "dotenv": "^16.0.1",
-    "express": "^4.18.1"
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3",
+    "router": "^1.3.7",
+    "routes": "^2.1.0",
+    "typeorm": "^0.3.10"
   }
 }
