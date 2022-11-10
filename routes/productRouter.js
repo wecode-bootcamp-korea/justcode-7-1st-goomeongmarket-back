@@ -11,11 +11,11 @@ router.post("/new", controller.getNewProduct);
 // 제품별로 보내기
 router.get("/goods/:productId", controller.productData);
 //알뜰제품 순으로 보내기
-router.get("/cheapproduct", controller.LineUpToCheap);
+router.post("/cheap", controller.LineUpToCheap);
 //상세 페이지 밑 리뷰
 router.get("/review/:productId", controller.getReviewByProduct);
 //주문내역 보내기-----------------------------------------------------다시 살펴봐야 함
 router.post("/order", controller.orderProduct);
-router.post("/best", controller.getProducts);
+router.post("/best", controller.getBsetProduct);
 
 module.exports = router;

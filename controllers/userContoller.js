@@ -18,7 +18,6 @@ const doubleCheckEmail = async (req, res) => {
     });
 
     const result = await userService.doubleCheckEmail(email);
-    console.log(result);
     res.status(200).json({ message: "NEW_EMAIL" });
   } catch (err) {
     console.log(err);
@@ -36,7 +35,6 @@ const signup = async (req, res) => {
       address,
       birthDate,
       gender_id,
-      hashedPw,
     } = req.body;
 
     const REQUIRED_KEYS = {
@@ -64,8 +62,7 @@ const signup = async (req, res) => {
       phoneNumber,
       address,
       birthDate,
-      gender_id,
-      hashedPw
+      gender_id
     );
 
     res.status(201).json({ message: "USER_CREATED" });
@@ -96,7 +93,6 @@ const login = async (req, res) => {
     });
 
     const token = await userService.login(email, password);
-    console.log(token);
 
     res.status(200).json({ message: "LOGIN_SUCCESS", token: token });
   } catch (err) {

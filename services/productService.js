@@ -50,7 +50,8 @@ const orderProduct = async (token, product_id, ordered_number) => {
 };
 
 const LineUpToCheap = async (sorted_by) => {
-  const result = await productModel.LineUpToNew(sorted_by);
+  const result = await productModel.LineUpToCheap(sorted_by);
+  console.log(result);
   if (!result.length) {
     const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
     error.status = 400;
@@ -62,6 +63,7 @@ const LineUpToCheap = async (sorted_by) => {
 
 const getReviewByProduct = async (product_id) => {
   const result = await productModel.getReviewByProduct(product_id);
+
   if (!result.length) {
     const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
     error.status = 400;
@@ -73,7 +75,18 @@ const getReviewByProduct = async (product_id) => {
 
 const getNewProduct = async (category_id, sorted_by) => {
   const result = await productModel.getNewProduct(category_id, sorted_by);
-  // console.log(result);
+  if (!result.length) {
+    const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
+    error.status = 400;
+    throw error;
+  } else {
+    return result;
+  }
+};
+
+const getBsetProduct = async (category_id, sorted_by) => {
+  const result = await productModel.getBsetProduct(category_id, sorted_by);
+
   if (!result.length) {
     const error = new Error("REQUESTED CATEGORY DOES NOT EXIST.");
     error.status = 400;
@@ -91,4 +104,5 @@ module.exports = {
   orderProduct,
   getReviewByProduct,
   getNewProduct,
+  getBsetProduct,
 };
