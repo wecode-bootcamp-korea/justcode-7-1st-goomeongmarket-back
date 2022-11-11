@@ -1,9 +1,10 @@
 -- migrate:up
-CREATE TABLE likes (
+  CREATE TABLE ordered_products (
     id int not null auto_increment,
     user_id int not null,
     product_id int not null,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    ordered_number int not null,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     foreign key (user_id) references users (id),
     foreign key (product_id) references products (id),
     primary key (id)
