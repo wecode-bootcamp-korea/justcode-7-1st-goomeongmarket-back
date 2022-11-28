@@ -21,28 +21,28 @@ const getProducts = async () => {
   return result;
 };
 
-const getProductsByCategory = async (category_id, sorterd_by) => {
-  if (sorterd_by > 0) {
-    const result = await myDataSource.query(
-      `select products.*, products.name as title, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = OT.product_id left join (select * from product_images order by created_at desc) AS IT  on products.id = IT.product_id WHERE categories.name = "${category_id}" order by ${sorterd_by}`
-    );
+const getProductsByCategory = async (category_id, sorted_by) => {
+
+  const query = `
+    select products.*, products.name as title, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = OT.product_id left join (select * from product_images order by created_at desc) AS IT  on products.id = IT.product_id WHERE categories.name = "${category_id}"
+  `
+
+  const SORTING_CONDITION = {
+    2: 'name',
+    '-2': 'name desce'
+  } 
+
+  if (!sorted_by) {
+    const result = await myDataSource.query(query);
     return result;
   }
-  if (sorterd_by < 0) {
-    const result = await myDataSource.query(
-      `select products.*, products.name as title, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = OT.product_id left join (select * from product_images order by created_at desc) AS IT  on products.id = IT.product_id WHERE categories.name = "${category_id}" order by ${
-        sorterd_by * -1
-      } desc`
-    );
-    return result;
-  }
-  if (!sorterd_by) {
-    const result = await myDataSource.query(
-      `select products.*, products.name as title, IT.image_url, OT.* from products INNER JOIN categories ON products.category_id=categories.id left JOIN (select product_id, sum(ordered_number) from ordered_products group by product_id) as OT on products.id = OT.product_id left join (select * from product_images order by created_at desc) AS IT  on products.id = IT.product_id WHERE categories.name = "${category_id}"`
-    );
-    return result;
-  }
+  const result = await myDataSource.query(`
+    ${query} + ORDER BY ${SORTING_CONDITION[sorted_by]}
+  `);
+  
+  return result;
 };
+
 const productData = async (product_id) => {
   const result = await myDataSource.query(
     `select 

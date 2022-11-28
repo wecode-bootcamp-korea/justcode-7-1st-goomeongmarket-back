@@ -1,3 +1,4 @@
+// TODO 13 productService
 const productservice = require("../services/productService");
 
 //------------------------------------------------------------------------------------
@@ -6,7 +7,10 @@ const productservice = require("../services/productService");
 const getProducts = async (req, res) => {
   // const
   try {
-    const result = await productservice.getProducts();
+    const category_id = req.query.category_id;
+    const sorted_by = req.query.sorted_by;
+    // 만약 전부 보내기 -> category_id, sorted_by -- undefined
+    const result = await productservice.getProducts(category_id, sorted_by);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
@@ -31,9 +35,11 @@ const getProductsByCategory = async (req, res) => {
 };
 //제품별로 보내기-----------------------------------------------------------------------
 const productData = async (req, res) => {
-  const product_id = req.params.productId;
+  // TODO 14 
+  const { productId } = req.params
+  // const product_id = req.params.productId;
   try {
-    const result = await productservice.productData(product_id);
+    const result = await productservice.productData(productId);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
@@ -42,9 +48,10 @@ const productData = async (req, res) => {
 };
 //결재----------------------------------------------------------------------
 const orderProduct = async (req, res) => {
+  // validate Token middleware 활용 -> not in controller, in router
   try {
     const { product_id, ordered_number } = req.body;
-    const { token } = req.headers;
+    // const { token } = req.headers;
     console.log(product_id);
     console.log(ordered_number);
     const required_keys = { product_id, ordered_number };
@@ -55,11 +62,13 @@ const orderProduct = async (req, res) => {
       }
     });
 
-    if (!token) {
-      throw new Error("ERROR: LOGIN_REQUESTED");
-    }
+    // if (!token) {
+    //   throw new Error("ERROR: LOGIN_REQUESTED");
+    // }
 
-    await productservice.orderProduct(token, product_id, ordered_number);
+    // TODO 15
+
+    await productservice.orderProduct(user_id, product_id, ordered_number);
     res.status(200).json({ message: "success" });
   } catch (err) {
     console.log(err);
@@ -82,11 +91,9 @@ const LineUpToCheap = async (req, res) => {
 
 //제품 밑 리뷰 보기-------------------------------------------------------------------------
 const getReviewByProduct = async (req, res) => {
-  const product_id = req.params.productId;
-  // console.log(product_id);
+  const { productId } = req.params
   try {
-    const result = await productservice.getReviewByProduct(product_id);
-    // console.log(result);
+    const result = await productservice.getReviewByProduct(productId);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
@@ -107,11 +114,10 @@ const getNewProduct = async (req, res) => {
   }
 };
 
-const getBsetProduct = async (req, res) => {
-  const category_id = req.query.category_id;
-  const sorted_by = req.query.sorted_by;
+const getBestProduct = async (req, res) => {
+  const { category_id, sorted_by } = req.query
   try {
-    const result = await productservice.getBsetProduct(category_id, sorted_by);
+    const result = await productservice.getBestProduct(category_id, sorted_by);
     res.status(200).json({ data: result });
   } catch (err) {
     console.log(err);
@@ -127,8 +133,19 @@ module.exports = {
   getReviewByProduct,
   orderProduct,
   getNewProduct,
-  getBsetProduct,
+  getBestProduct,
 };
+
+const SORT_TYPE = {
+  2: '제품순름 순',
+  6: '가격 순',
+  10: '세일 순'
+}
+
+// sort_by -> 10
+
+// console.log(SORT_TYPE[sort_by]) // 세일 순
+
 /*
 sorted_type = 2 -> 제품이름 순
 sorted_type = 6 -> 가격 순

@@ -1,7 +1,9 @@
 require("dotenv").config();
 
 const { createApp } = require("./app");
-const router = require("./routes");
+
+// TODO 1 - router 제거
+// const router = require("./routes");
 
 const startServer = async () => {
   const app = createApp();
