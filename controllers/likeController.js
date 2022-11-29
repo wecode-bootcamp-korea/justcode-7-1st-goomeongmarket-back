@@ -1,23 +1,18 @@
 const likeService = require("../services/likeService");
+const { findEmptyData } = require("../middlewares/etc");
 
 const addLike = async (req, res) => {
   try {
     const { product_id } = req.body;
-    const { token } = req.headers;
+    const user_id = req.userInfo.id;
 
     const REQUIRED_KEYS = {
       product_id,
     };
 
-    Object.keys(REQUIRED_KEYS).map((key) => {
-      if (!REQUIRED_KEYS[key]) {
-        const error = new Error(`KEY_ERROR: ${key}`);
-        error.statusCode = 400; //잘못된 값이 포함되거나 값이 없을때 400
-        throw error;
-      }
-    });
+    await findEmptyData(REQUIRED_KEYS);
 
-    await likeService.addLike(product_id, token);
+    await likeService.addLike(product_id, user_id);
     res.status(201).json({ message: "success product like" });
   } catch (err) {
     console.log(err);
@@ -27,9 +22,9 @@ const addLike = async (req, res) => {
 
 const likeInfo = async (req, res) => {
   try {
-    const { token } = req.headers;
+    const user_id = req.userInfo.id;
 
-    let result = await likeService.likeInfo(token);
+    let result = await likeService.likeInfo(user_id);
     res.status(200).json({ message: "success check likelist", data: result });
   } catch (err) {
     console.log(err);
@@ -40,21 +35,15 @@ const likeInfo = async (req, res) => {
 const removelike = async (req, res) => {
   try {
     const { product_id } = req.body;
-    const { token } = req.headers;
+    const user_id = req.userInfo.id;
 
     const REQUIRED_KEYS = {
       product_id,
     };
 
-    Object.keys(REQUIRED_KEYS).map((key) => {
-      if (!REQUIRED_KEYS[key]) {
-        const error = new Error(`KEY_ERROR: ${key}`);
-        error.statusCode = 400; //잘못된 값이 포함되거나 값이 없을때 400
-        throw error;
-      }
-    });
+    await findEmptyData(REQUIRED_KEYS);
 
-    await likeService.removelike(product_id, token);
+    await likeService.removelike(product_id, user_id);
 
     res.status(200).json({ message: "success delete product" });
   } catch (err) {

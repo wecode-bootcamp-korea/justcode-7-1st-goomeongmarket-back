@@ -4,8 +4,8 @@ const validateToken = require("../middlewares/validateToken");
 
 const likeController = require("../controllers/likeController");
 
-router.post("/addlike", likeController.addLike);
-router.get("/likeinfo", likeController.likeInfo);
-router.delete("/removelike", likeController.removelike);
+router.post("/addlike", validateToken, likeController.addLike);
+router.get("/likeinfo", validateToken, likeController.likeInfo);
+router.delete("/removelike", validateToken, likeController.removelike);
 
 module.exports = router;
