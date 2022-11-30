@@ -1,7 +1,6 @@
 require("dotenv").config();
 
 const { createApp } = require("./app");
-const router = require("./routes");
 
 const startServer = async () => {
   const app = createApp();
