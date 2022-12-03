@@ -1,15 +1,20 @@
 const myDataSource = require("./index");
 
 const addLike = async (user_id, product_id) => {
-  await myDataSource.query(`
-    INSERT INTO likes (user_id, product_id)
+  await myDataSource.query(
+    `
+    INSERT INTO 
+      likes (user_id, product_id)
+    VALUE 
+      (?,?)
    `,
     [user_id, product_id]
-   );
+  );
 };
 
 const likeInfo = async (user_id) => {
-  let listInfo = await myDataSource.query(`
+  let listInfo = await myDataSource.query(
+    `
     SELECT 
       likes.user_id,
     JSON_ARRAYAGG(
@@ -39,14 +44,15 @@ const likeInfo = async (user_id) => {
     GROUP BY
       likes.user_id
   `,
-  [user_id]
+    [user_id]
   );
 
   return listInfo;
 };
 
 const removelike = async (user_id, product_id) => {
-  await myDataSource.query(`
+  await myDataSource.query(
+    `
   DELETE FROM 
     likes
   WHERE 
