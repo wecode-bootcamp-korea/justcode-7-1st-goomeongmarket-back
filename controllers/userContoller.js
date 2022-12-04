@@ -103,8 +103,23 @@ const login = async (req, res) => {
 
 //logout
 
+//getme api(token값 받아서 해당 유저 이름 리턴해주는 api)
+const getMe = async (req, res) => {
+  try {
+    const user_id = req.userInfo.id;
+
+    const data = await userService.getMe(user_id);
+
+    res.status(200).json({ message: "success", data });
+  } catch (err) {
+    console.log(err);
+    res.status(err.statusCode).json({ message: err.message });
+  }
+};
+
 module.exports = {
   signup,
   login,
   doubleCheckEmail,
+  getMe,
 };

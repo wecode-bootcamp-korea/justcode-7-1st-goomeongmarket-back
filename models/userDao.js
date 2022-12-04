@@ -35,8 +35,22 @@ SELECT id, password FROM users WHERE email = '${email}'`);
   return existingUser;
 };
 
+const getMe = async (user_id) => {
+  return await myDataSource.query(
+    `
+    SELECT 
+      username
+    FROM 
+      users
+    WHERE
+      id = '${user_id}'
+    `
+  );
+};
+
 module.exports = {
   doubleCheckEmail,
   createUser,
   login,
+  getMe,
 };
