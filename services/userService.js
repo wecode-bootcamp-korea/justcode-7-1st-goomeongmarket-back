@@ -74,8 +74,13 @@ const login = async (email, password) => {
   return token;
 };
 
+const getMe = async (user_id) => {
+  return await userDao.getMe(user_id);
+};
+
 module.exports = {
   signup,
   login,
   doubleCheckEmail,
+  getMe,
 };
