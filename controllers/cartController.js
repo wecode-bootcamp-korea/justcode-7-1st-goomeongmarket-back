@@ -34,4 +34,22 @@ const cartList = async (req, res) => {
   }
 };
 
-module.exports = { cartUpdate, cartList };
+const deleteItemInCart = async (req, res) => {
+  try {
+    const { product_id } = req.body;
+    const user_id = req.userInfo.id;
+    const REQUIRED_KEYS = {
+      product_id,
+    };
+
+    await findEmptyData(REQUIRED_KEYS);
+
+    await cartService.deleteItemInCart(product_id, user_id);
+    res.status(200).json({ message: "success delete product" });
+  } catch (err) {
+    console.log(err);
+    res.status(err.statusCode).json({ message: err.message });
+  }
+};
+
+module.exports = { cartUpdate, cartList, deleteItemInCart };
