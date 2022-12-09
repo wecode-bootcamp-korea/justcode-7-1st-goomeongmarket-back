@@ -1,7 +1,7 @@
 const myDataSource = require("./index");
 
 const cartUpdate = async (product_id, put_quantity, user_id) => {
-  let existProduct = await myDataSource.query(
+  let [existProduct] = await myDataSource.query(
     `
     SELECT 
       user_id, product_id 
@@ -12,7 +12,8 @@ const cartUpdate = async (product_id, put_quantity, user_id) => {
   `,
     [user_id, product_id]
   );
-  if (existProduct) {
+  console.log(existProduct);
+  if (!existProduct) {
     await myDataSource.query(
       `
       INSERT INTO 
@@ -23,18 +24,8 @@ const cartUpdate = async (product_id, put_quantity, user_id) => {
       [user_id, product_id, put_quantity]
     );
   }
-  if (!existProduct) {
-    await myDataSource.query(
-      `
-      UPDATE 
-        cart_item 
-      SET
-        put_quantity = ? 
-      WHERE
-        user_id = ? && product_id = ?
-    `,
-      [put_quantity, user_id, product_id]
-    );
+  if (existProduct) {
+    return existProduct;
   }
 };
 
@@ -76,4 +67,18 @@ const deleteItemInCart = async (product_id, user_id) => {
   );
 };
 
-module.exports = { cartUpdate, cartList, deleteItemInCart };
+const changeItemQuantity = async (product_id, put_quantity, user_id) => {
+  await myDataSource.query(
+    `
+      UPDATE 
+        cart_item 
+      SET
+        put_quantity = ? 
+      WHERE
+        user_id = ? && product_id = ?
+    `,
+    [put_quantity, user_id, product_id]
+  );
+};
+
+module.exports = { cartUpdate, cartList, deleteItemInCart, changeItemQuantity };

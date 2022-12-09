@@ -52,4 +52,25 @@ const deleteItemInCart = async (req, res) => {
   }
 };
 
-module.exports = { cartUpdate, cartList, deleteItemInCart };
+const changeItemQuantity = async (req, res) => {
+  try {
+    const { product_id, put_quantity } = req.body;
+    const user_id = req.userInfo.id;
+    const REQUIRED_KEYS = {
+      product_id,
+      put_quantity,
+    };
+
+    await findEmptyData(REQUIRED_KEYS);
+
+    await cartService.changeItemQuantity(product_id, put_quantity, user_id);
+    res
+      .status(200)
+      .json({ message: "You have successfully added an item to your cart" });
+  } catch (err) {
+    console.log(err);
+    res.status(err.statusCode).json({ message: err.message });
+  }
+};
+
+module.exports = { cartUpdate, cartList, deleteItemInCart, changeItemQuantity };
